@@ -25,6 +25,13 @@
     const createType = () => {
         router.push("/types/create")
     }
+
+    /**
+    * GO TO HOME PAGE
+    */
+   const Home = () => {
+       router.push("/")
+   }
     
     const editType = (id) => {
         router.push(`/types/${id}/edit`)

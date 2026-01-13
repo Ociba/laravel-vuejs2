@@ -9,13 +9,54 @@ use Intervention\Image\Laravel\Facades\Image;
 
 class ProductController extends Controller
 {
-    public function index(){
-       $products = Product::query();
-       $products = $products->latest()->paginate(4);
-
-       return response() ->json([
-          'products' =>$products
-       ], 200);
+   public function index(Request $request)
+    {
+        $query = Product::query();
+        
+        // Search across multiple columns
+        if ($request->has('search') && !empty($request->search)) {
+            $searchTerm = $request->search;
+            
+            $query->where(function ($q) use ($searchTerm) {
+                $q->where('item_name', 'LIKE', "%{$searchTerm}%")
+                  ->orWhere('description', 'LIKE', "%{$searchTerm}%")
+                  ->orWhere('condition', 'LIKE', "%{$searchTerm}%")
+                  ->orWhere('status', 'LIKE', "%{$searchTerm}%");
+            });
+        }
+        
+        // Filter by condition
+        if ($request->has('condition')) {
+            $conditions = explode(',', $request->condition);
+            $query->whereIn('condition', $conditions);
+        }
+        
+        // Filter by status (default to available)
+        if ($request->has('status')) {
+            $statuses = explode(',', $request->status);
+            $query->whereIn('status', $statuses);
+        } else {
+            // Default: only show available products
+            $query->where('status', 'available');
+        }
+        
+        // Price range filter (optional)
+        if ($request->has('min_price')) {
+            $query->where('price', '>=', $request->min_price);
+        }
+        
+        if ($request->has('max_price')) {
+            $query->where('price', '<=', $request->max_price);
+        }
+        
+        // Paginate results
+        $products = $query->orderBy('created_at', 'desc')
+                         ->paginate(12);
+        
+        return response()->json([
+            'products' => $products,
+            'filters' => $request->all()
+        ]);
     }
 
     public function store(Request $request)
@@ -76,4 +117,26 @@ class ProductController extends Controller
             'product' => $product
         ], 201);
     }
+
+    public function countSellerProducts(Request $request)
+{
+    $count = Product::where('seller_id', $request->user()->id)->count();
+    
+    return response()->json([
+        'success' => true,
+        'count' => $count
+    ]);
+}
+
+public function getMyProducts(Request $request)
+{
+    $products = Product::where('seller_id', $request->user()->id)
+        ->orderBy('created_at', 'desc')
+        ->paginate(10);
+    
+    return response()->json([
+        'success' => true,
+        'products' => $products
+    ]);
+}
 }

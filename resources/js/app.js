@@ -1,23 +1,33 @@
 import './bootstrap';
 import 'bootstrap';
 
+import { createApp } from 'vue';
+import { createPinia } from 'pinia';
+import router from './router';
+import App from './components/App.vue';
 
-import { createApp } from 'vue'
+import Swal from 'sweetalert2';
 
-import app from './components/App.vue'
-
-import router from './router'
-
-import Swal from 'sweetalert2'
-
-window.Swal =Swal
+// Configure SweetAlert2
+window.Swal = Swal;
 const toast = Swal.mixin({
-    toast:true,
-    position:"top-end",
+    toast: true,
+    position: "top-end",
     showConfirmButton: false,
-    timer:3000,
-    timerProgressBar:true
-})
-window.toast =toast
+    timer: 3000,
+    timerProgressBar: true
+});
+window.toast = toast;
 
-createApp(app).use(router).mount("#app")
+// Create Vue app instance
+const app = createApp(App);
+
+// Create Pinia store
+const pinia = createPinia();
+
+// Use plugins
+app.use(pinia);
+app.use(router);
+
+// Mount the app
+app.mount('#app');

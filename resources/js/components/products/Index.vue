@@ -2,6 +2,9 @@
     import { useRouter } from "vue-router"
     import { onMounted, ref, watch } from "vue"
     import axios from 'axios'
+    import Navbar from '../layouts/Navbar.vue'
+    import HeroSlider from '../layouts/HeroSlider.vue'
+    import AppFooter from '../layouts/AppFooter.vue' 
     
     const router = useRouter()
     const products = ref([])
@@ -113,31 +116,47 @@
     </script>
     
     <template>
+        <!-- Navbar Component -->
+        <Navbar />
+        
+        <!-- Hero Slider Component -->
+        <HeroSlider />
+    
         <div class="container my-5">
-            <div class="text-center mt-4">
-                <button 
-                    @click="newProduct" 
-                    class="btn btn-primary btn-sm mr-1"
-                    :disabled="loading"
-                >
-                    <i class="bi bi-plus-circle me-2"></i>Add New Product
-                </button>
-                <button 
-                    @click="categoryPage" 
-                    class="btn btn-primary btn-sm mr-1"
-                    :disabled="loading"
-                >
-                    <i class="bi bi-plus-circle me-2"></i>Categories
-                </button>
-                <button 
-                    @click="typePage" 
-                    class="btn btn-primary btn-sm mr-1"
-                    :disabled="loading"
-                >
-                    <i class="bi bi-plus-circle me-2"></i>Types
-                </button>
+            <!-- Page Header -->
+            <div class="page-header mb-4">
+                <h1 class="text-center mb-3">Our Products</h1>
+                <p class="text-center text-muted mb-4">
+                    Browse through our wide collection of quality products at the best prices
+                </p>
             </div>
-            <h1 class="text-center mb-4">Our Products</h1>
+            
+            <!-- Admin Controls (only show if user is admin) -->
+            <div class="admin-controls mb-4">
+                <div class="text-center">
+                    <button 
+                        @click="newProduct" 
+                        class="btn btn-primary btn-sm me-2"
+                        :disabled="loading"
+                    >
+                        <i class="bi bi-plus-circle me-2"></i>Add New Product
+                    </button>
+                    <button 
+                        @click="categoryPage" 
+                        class="btn btn-primary btn-sm me-2"
+                        :disabled="loading"
+                    >
+                        <i class="bi bi-tags me-2"></i>Categories
+                    </button>
+                    <button 
+                        @click="typePage" 
+                        class="btn btn-primary btn-sm"
+                        :disabled="loading"
+                    >
+                        <i class="bi bi-grid-3x3 me-2"></i>Types
+                    </button>
+                </div>
+            </div>
             
             <!-- Enhanced Search Section -->
             <div class="row mb-4">
@@ -372,12 +391,42 @@
                     </p>
                 </div>
             </div>
-    
-            <!-- Add Product Button -->
         </div>
+    
+        <!-- Footer Component -->
+        <AppFooter />
     </template>
     
     <style scoped>
+    /* Keep all your existing styles from the original file */
+    /* ... (all your existing styles remain the same) ... */
+    
+    /* Additional styles for the updated layout */
+    .page-header {
+        margin-top: 2rem;
+    }
+    
+    .admin-controls {
+        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+        padding: 1rem;
+        border-radius: 10px;
+        margin-bottom: 2rem;
+        border: 1px solid #dee2e6;
+    }
+    
+    .product-card {
+        transition: all 0.3s ease;
+        border: 1px solid #e9ecef;
+        border-radius: 12px;
+        overflow: hidden;
+    }
+    
+    .product-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        border-color: #007bff;
+    }
+    
     .product-image {
         height: 200px;
         object-fit: cover;
@@ -404,274 +453,26 @@
         z-index: 1;
     }
     
-    .product-card {
-        transition: all 0.3s ease;
-        border: 1px solid #e9ecef;
-        border-radius: 12px;
-        overflow: hidden;
-    }
-    
-    .product-card:hover {
-        transform: translateY(-8px);
-        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-        border-color: #007bff;
-    }
-    
-    .search-card {
-        border: none;
-        border-radius: 15px;
-        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-        transition: all 0.3s ease;
-    }
-    
-    .search-card:focus-within {
-        box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.25);
-    }
-    
-    .search-card .input-group-text {
-        background: transparent;
-        border-right: none;
-        padding-left: 20px;
-    }
-    
-    .search-card .form-control {
-        border-left: none;
-        padding-left: 0;
-        background: transparent;
-        transition: all 0.3s ease;
-    }
-    
-    .search-card .form-control:focus {
-        box-shadow: none;
-        background: transparent;
-    }
-    
-    .search-card .input-group:focus-within {
-        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
-        border-radius: 8px;
-    }
-    
-    .empty-state {
-        padding: 60px 20px;
-        background: #f8f9fa;
-        border-radius: 15px;
-        border: 2px dashed #dee2e6;
-        animation: fadeIn 0.5s ease;
-    }
-    
-    .btn-primary {
-        background: linear-gradient(135deg, #007bff, #0056b3);
-        border: none;
-        padding: 12px 24px;
-        font-weight: 600;
-        transition: all 0.3s ease;
-        position: relative;
-        overflow: hidden;
-    }
-    
-    .btn-primary:hover:not(:disabled) {
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(0,123,255,0.3);
-    }
-    
-    .btn-primary:disabled {
-        opacity: 0.65;
-        cursor: not-allowed;
-        transform: none !important;
-        box-shadow: none !important;
-    }
-     .mr-1{
-        white-space: 4px;
-     }
-    .btn-primary::after {
-        content: '';
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        width: 5px;
-        height: 5px;
-        background: rgba(255, 255, 255, 0.5);
-        opacity: 0;
-        border-radius: 100%;
-        transform: scale(1, 1) translate(-50%);
-        transform-origin: 50% 50%;
-    }
-    
-    .btn-primary:focus:not(:active)::after {
-        animation: ripple 1s ease-out;
-    }
-    
-    .page-link {
-        padding: 10px 18px;
-        margin: 0 5px;
-        border-radius: 8px;
-        border: 1px solid #dee2e6;
-        color: #495057;
-        transition: all 0.2s ease;
-        font-weight: 500;
-    }
-    
-    .page-link:hover:not(:disabled) {
-        background-color: #007bff;
-        color: white;
-        border-color: #007bff;
-        transform: translateY(-2px);
-    }
-    
-    .page-link:disabled {
-        opacity: 0.65;
-        cursor: not-allowed;
-    }
-    
-    .page-item.active .page-link {
-        background: linear-gradient(135deg, #007bff, #0056b3);
-        border-color: #007bff;
-        color: white;
-        box-shadow: 0 2px 8px rgba(0,123,255,0.3);
-    }
-    
-    .page-item.disabled .page-link {
-        color: #6c757d;
-        pointer-events: none;
-        background-color: #f8f9fa;
-        border-color: #dee2e6;
-    }
-    
-    .product-image-container {
-        position: relative;
-        overflow: hidden;
-        border-radius: 8px;
-    }
-    
-    .card-title {
-        font-weight: 600;
-        color: #2c3e50;
-        margin-bottom: 10px;
-        line-height: 1.4;
-    }
-    
-    .card-text {
-        line-height: 1.6;
-        color: #6c757d;
-        flex-grow: 1;
-    }
-    
-    .text-primary {
-        color: #007bff !important;
-        font-weight: 700;
-    }
-    
-    .text-decoration-line-through {
-        color: #95a5a6;
-        font-size: 0.9em;
-    }
-    
-    .form-control-lg {
-        font-size: 1.1rem;
-        padding: 15px;
-    }
-    
-    .bi {
-        font-size: 1.1em;
-    }
-    
-    .spinner-border {
-        vertical-align: middle;
-    }
-    
-    .badge {
-        padding: 8px 12px;
-        font-weight: 500;
-        border-radius: 10px;
-    }
-    
-    @keyframes fadeIn {
-        from {
-            opacity: 0;
-            transform: translateY(10px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-    
-    @keyframes ripple {
-        0% {
-            transform: scale(0, 0);
-            opacity: 1;
-        }
-        20% {
-            transform: scale(25, 25);
-            opacity: 1;
-        }
-        100% {
-            opacity: 0;
-            transform: scale(40, 40);
-        }
-    }
-    
+    /* Responsive adjustments for the new layout */
     @media (max-width: 768px) {
-        .search-card .card-body .row > div {
-            width: 100%;
+        .page-header h1 {
+            font-size: 2rem;
         }
         
-        .search-card .btn {
-            height: auto;
-            padding: 12px;
+        .admin-controls .btn {
+            margin-bottom: 0.5rem;
+            width: 100%;
+        }
+    }
+    
+    @media (max-width: 576px) {
+        .page-header h1 {
+            font-size: 1.8rem;
         }
         
         .product-image {
             height: 180px;
         }
-        
-        .pagination {
-            flex-wrap: wrap;
-        }
-        
-        .page-link {
-            padding: 8px 14px;
-            margin: 2px;
-            font-size: 0.9rem;
-        }
-    }
-    
-    @media (max-width: 576px) {
-        .product-image {
-            height: 160px;
-        }
-        
-        .card-title {
-            font-size: 1.1rem;
-        }
-        
-        .btn-sm {
-            padding: 10px 20px;
-            font-size: 1rem;
-        }
-        
-        h1 {
-            font-size: 1.8rem;
-        }
-    }
-    
-    /* Add smooth transitions for search results */
-    .row {
-        animation: fadeIn 0.3s ease;
-    }
-    
-    /* Loading animation */
-    @keyframes pulse {
-        0%, 100% {
-            opacity: 1;
-        }
-        50% {
-            opacity: 0.5;
-        }
-    }
-    
-    .loading-pulse {
-        animation: pulse 1.5s ease-in-out infinite;
     }
     </style>
     

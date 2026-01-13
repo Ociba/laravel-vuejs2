@@ -5,14 +5,37 @@ use Illuminate\Support\Facades\Route;
 use  App\Http\Controllers\ProductController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\TypeController;
+use App\Http\Controllers\AuthController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
+// Public routes
+Route::post('/register', [AuthController::class, 'register']);
+Route::post('/login', [AuthController::class, 'login']);
 
-Route::post('/products',[ProductController::class,'store']);
-Route::get('/products',[ProductController::class,'index']);
+// Protected routes
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/logout', [AuthController::class, 'logout']);
+    Route::get('/me', [AuthController::class, 'me']);
+    Route::put('/profile', [AuthController::class, 'updateProfile']);
+    Route::put('/change-password', [AuthController::class, 'changePassword']);
+});
+
+Route::middleware('auth:sanctum')->group(function () {
+    // For sellers
+    Route::prefix('seller')->group(function () {
+        Route::get('/products/count', [ProductController::class, 'countSellerProducts']);
+        Route::get('/products', [ProductController::class, 'getSellerProducts']);
+    });
+    
+    // Products with seller_id
+    Route::post('/products', [ProductController::class, 'store']);
+    Route::get('/my-products', [ProductController::class, 'getMyProducts']);
+});
+// Route::post('/products',[ProductController::class,'store']);
+// Route::get('/products',[ProductController::class,'index']);
 
 Route::post('/categories',[CategoryController::class,'create']);
 Route::get('/categories',[CategoryController::class,'index']);
