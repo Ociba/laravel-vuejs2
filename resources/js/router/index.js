@@ -98,6 +98,12 @@ const routes =[
     name: 'products.create',
     component: ProductForm,
 },
+
+{
+    path:'/products/:id/edit',
+    name: 'products.edit',
+    component: ProductForm,
+},
 {
     path:'/categories',
     name: 'categories.index',

@@ -5,7 +5,7 @@
         <Navbar />
 
         <!-- Dashboard Layout -->
-        <div class="dashboard-container">
+        <div class="dashboard-container mt-2">
             <!-- Sidebar -->
             <div class="dashboard-sidebar">
                 <div class="sidebar-header">
@@ -24,9 +24,14 @@
                         <span>Dashboard</span>
                     </router-link>
 
-                    <router-link to="/products/create" class="menu-item">
+                    <router-link to="/categories" class="menu-item">
                         <i class="bi bi-plus-circle"></i>
-                        <span>Add Product</span>
+                        <span>Categories</span>
+                    </router-link>
+
+                    <router-link to="/types" class="menu-item">
+                        <i class="bi bi-plus-circle"></i>
+                        <span>Types</span>
                     </router-link>
 
                     <router-link to="/my-products" class="menu-item">
@@ -97,31 +102,6 @@
                             <div class="card form-card shadow-sm border-0">
 
                                 <div class="card-body">
-                                    <!-- Page Header -->
-                                    <div class="page-header mb-4">
-                                        <h1 class="text-center mb-3">Our Products</h1>
-                                        <p class="text-center text-muted mb-4">
-                                            Browse through our wide collection of quality products at the best prices
-                                        </p>
-                                    </div>
-
-                                    <!-- Admin Controls (only show if user is admin) -->
-                                    <div class="admin-controls mb-4">
-                                        <div class="text-center">
-                                            <button @click="newProduct" class="btn btn-primary btn-sm me-2"
-                                                :disabled="loading">
-                                                <i class="bi bi-plus-circle me-2"></i>Add New Product
-                                            </button>
-                                            <button @click="categoryPage" class="btn btn-primary btn-sm me-2"
-                                                :disabled="loading">
-                                                <i class="bi bi-tags me-2"></i>Categories
-                                            </button>
-                                            <button @click="typePage" class="btn btn-primary btn-sm"
-                                                :disabled="loading">
-                                                <i class="bi bi-grid-3x3 me-2"></i>Types
-                                            </button>
-                                        </div>
-                                    </div>
 
                                     <!-- Enhanced Search Section -->
                                     <div class="row mb-4">
@@ -247,8 +227,14 @@ let products = ref([])
 
 let links = ref([])
 
+let searchQuery = ref('')
+
 
 onMounted(async () => {
+    getMyProducts()
+})
+
+watch(searchQuery, () => {
     getMyProducts()
 })
 const newProduct = () => {
@@ -260,7 +246,7 @@ const ourImage = (img) => {
 }
 
 const getMyProducts = async () => {
-    let response = await axios.get ('api/my-products')
+    let response = await axios.get ('api/my-products?&searchQuery='+searchQuery.value)
     .then((response) => {
         products.value = response.data.products.data
         links.value = response.data.products.links

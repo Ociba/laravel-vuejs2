@@ -33,6 +33,8 @@ Route::middleware('auth:sanctum')->group(function () {
     // Products with seller_id
     Route::post('/products', [ProductController::class, 'store']);
     Route::get('/my-products', [ProductController::class, 'getMyProducts']);
+    Route::get('/products/{product}/edit', [ProductController::class, 'edit']);
+    Route::get('/products/{product}', [ProductController::class, 'update']);
 });
 // Route::post('/products',[ProductController::class,'store']);
 // Route::get('/products',[ProductController::class,'index']);

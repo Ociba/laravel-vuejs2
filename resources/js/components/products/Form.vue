@@ -111,7 +111,9 @@
                                         <!-- Product Basic Info -->
                                         <div class="form-section mb-4">
                                             <h6 class="section-title">
-                                                <i class="bi bi-info-circle me-2"></i>Basic Information
+                                                <i class="bi bi-info-circle me-2"></i>
+                                                <span v-if="editMode">Edit</span>
+                                                <span v-else>Create</span> Product
                                             </h6>
                                             <div class="row g-3">
                                                 <!-- Item Name -->
@@ -404,13 +406,15 @@
 </template>
 
 <script setup>
+    
 import { reactive, ref, computed, onMounted } from "vue"
-import { useRouter } from "vue-router"
+import { useRouter, useRoute } from "vue-router"
 import { useAuthStore } from '../../stores/auth'
 import Navbar from '../layouts/Navbar.vue'
 import AppFooter from '../layouts/AppFooter.vue'
 
 const router = useRouter()
+const route = useRoute()
 const authStore = useAuthStore()
 
 const form = reactive({
@@ -427,6 +431,49 @@ const errors = ref({})
 const loading = ref(false)
 const fileInput = ref(null)
 const productCount = ref(0)
+const editMode = ref(false) //edit product using same form
+
+
+
+/**
+     * DETECT EDIT MODE SAFELY
+     */
+     onMounted(async () => {
+
+        if (route.params.id) {
+            editMode.value = true
+    
+            await getMyProducts()
+        }
+
+        fetchProductCount()
+    
+        // Check if user is seller
+        if (!authStore.isSeller) {
+            router.push('/dashboard')
+        }
+    })
+    
+    /**
+     * FETCH CATEGORY FOR EDIT
+     */
+    const getMyProducts = async () => {
+        try {
+            const response = await axios.get(
+                `/api/products/${route.params.id}/edit`
+            )
+    
+            form.item_name = response.data.product.item_name
+            form.price = response.data.product.price
+            form.discount = response.data.product.discount
+            form.status = response.data.product.status
+            form.description = response.data.product.description
+            form.image = response.data.product.image
+        } catch (error) {
+            console.error("Failed to load category", error)
+        }
+    }
+    
 
 // Condition options
 const conditions = [
@@ -531,8 +578,20 @@ const fetchProductCount = async () => {
     }
 }
 
-const handleSave = async () => {
-    loading.value = true
+
+
+ /**
+     * SAVE HANDLER
+     */
+     const handleSave = () => {
+        editMode.value ? updateProduct() : createProduct()
+    }
+    
+    /**
+     * CREATE CATEGORY
+     */
+    const createProduct = async () => {
+        loading.value = true
     errors.value = {}
 
     try {
@@ -581,7 +640,37 @@ const handleSave = async () => {
     } finally {
         loading.value = false
     }
-}
+    }
+    
+    /**
+     * UPDATE Product
+     */
+    const updateProduct = async () => {
+        loading.value = true
+        errors.value = {}
+    
+        try {
+            await axios.put(
+                `/api/products/${route.params.id}`,
+                form
+            )
+    
+            toast.fire({
+                icon: "success",
+                title: "Product Updated Successfully",
+            })
+    
+            router.push("/my-products")
+        } catch (error) {
+            if (error.response?.status === 422) {
+                errors.value = error.response.data.errors
+            }
+        } finally {
+            loading.value = false
+        }
+    }
+
+
 
 const saveAsDraft = async () => {
     form.status = "draft"
@@ -593,15 +682,6 @@ const logout = async () => {
     router.push('/login')
 }
 
-// Lifecycle hooks
-onMounted(() => {
-    fetchProductCount()
-    
-    // Check if user is seller
-    if (!authStore.isSeller) {
-        router.push('/dashboard')
-    }
-})
 </script>
 
 <style scoped>

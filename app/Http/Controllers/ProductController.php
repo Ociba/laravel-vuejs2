@@ -131,18 +131,79 @@ class ProductController extends Controller
     ]);
 }
 
-public function getMyProducts()
+public function getMyProducts(Request $request)
 {
     $products = Product::query();
 
-    // $products = Product::where('seller_id', auth()->user()->id)
-    //     ->orderBy('created_at', 'desc')
-    //     ->paginate(10);
-
+    if($request->searchQuery != ''){
+        $products = Product::where('item_name','like','%'.$request->searchQuery . '%');
+    }
     $products = $products->where('seller_id', auth()->user()->id)->latest()->paginate(2);
     
     return response()->json([
         'products' => $products
     ], 200);
+}
+
+public function edit($id)
+{
+    $product =Product::find($id);
+    return response()->json([
+        'product' =>$product
+    ], 200);
+}
+
+public  function update(Request $request, $id){
+    $request->validate([
+        'item_name' => 'required',
+        'price' => 'required',
+        'condition' => 'required',
+        'description' => 'required',
+        'status' => 'required',
+        'image' => 'required',
+    ]);
+
+    $product= Product::find($id);
+
+    $product->item_name  = $request->item_name;
+        $product->discount   = $request->discount;
+        $product->description = $request->description;
+        $product->price      = $request->price;
+        $product->condition  = $request->condition;
+        
+        $product->seller_id  = Auth::user()->id;
+
+        if (!empty($request->image)) {
+            try {
+                $strpos = strpos($request->image, ';');
+                $sub = substr($request->image, 0, $strpos);
+                $ex = explode('/', $sub)[1];
+                $name = time() . '.' . $ex;
+
+                $upload_path = public_path('upload');
+
+                if (!file_exists($upload_path)) {
+                    mkdir($upload_path, 0777, true);
+                }
+
+                Image::read($request->image)
+                    ->resize(200, 200)
+                    ->save($upload_path . '/' . $name);
+
+                $product->image = $name;
+            } catch (\Throwable $e) {
+                $product->image = $product->image;
+            }
+        } else {
+            $product->image = $product->image;
+        }
+
+        $product->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Product created successfully',
+            'product' => $product
+        ], 201);
 }
 }
