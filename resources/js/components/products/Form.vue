@@ -578,20 +578,8 @@ const fetchProductCount = async () => {
     }
 }
 
-
-
- /**
-     * SAVE HANDLER
-     */
-     const handleSave = () => {
-        editMode.value ? updateProduct() : createProduct()
-    }
-    
-    /**
-     * CREATE CATEGORY
-     */
-    const createProduct = async () => {
-        loading.value = true
+const handleSave = async () => {
+    loading.value = true
     errors.value = {}
 
     try {
@@ -640,35 +628,7 @@ const fetchProductCount = async () => {
     } finally {
         loading.value = false
     }
-    }
-    
-    /**
-     * UPDATE Product
-     */
-    const updateProduct = async () => {
-        loading.value = true
-        errors.value = {}
-    
-        try {
-            await axios.put(
-                `/api/products/${route.params.id}`,
-                form
-            )
-    
-            toast.fire({
-                icon: "success",
-                title: "Product Updated Successfully",
-            })
-    
-            router.push("/my-products")
-        } catch (error) {
-            if (error.response?.status === 422) {
-                errors.value = error.response.data.errors
-            }
-        } finally {
-            loading.value = false
-        }
-    }
+}
 
 
 

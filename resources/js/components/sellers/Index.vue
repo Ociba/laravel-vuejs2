@@ -69,10 +69,10 @@
             <!-- Main Content -->
             <div class="dashboard-main">
                 <!-- Dashboard Header -->
-                <div class="dashboard-header">
+                <div class="dashboard-header mt-5">
                     <div class="header-content">
                         <h1 class="page-title">
-                            <i class="bi bi-plus-circle me-2"></i>Add New Product
+                            <i class="bi bi-plus-circle me-2"></i>All My Product
                         </h1>
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb">
@@ -80,16 +80,15 @@
                                     <router-link to="/dashboard/seller">Dashboard</router-link>
                                 </li>
                                 <li class="breadcrumb-item">
-                                    <router-link to="/my-products">My Products</router-link>
+                                    <router-link to="/dashboard/seller">My Products</router-link>
                                 </li>
-                                <li class="breadcrumb-item active">Add New</li>
                             </ol>
                         </nav>
                     </div>
 
                     <div class="header-actions">
                         <router-link to="/my-products" class="btn btn-outline-primary">
-                            <i class="bi bi-arrow-left me-2"></i>Back to Products
+                            <i class="bi bi-arrow-left me-2"></i>Back to Dashboard
                         </router-link>
                     </div>
                 </div>
@@ -111,9 +110,9 @@
 
                                                     <!-- HEADER -->
                                                     <div
-                                                        class="title-header option-title mb-3 d-flex align-items-center">
+                                                        class="title-header option-title mb-3  d-flex align-items-center">
                                                         <!-- LEFT -->
-                                                        <h5 class="mb-0">All Products</h5>
+                                                        <h5 class="mb-0"></h5>
 
                                                         <!-- RIGHT -->
                                                         <div class="ms-auto d-flex gap-2">
@@ -153,6 +152,7 @@
                                                                     <th>Product</th>
                                                                     <th>Image</th>
                                                                     <th>Condition</th>
+                                                                    <th>Price</th>
                                                                     <th>Action</th>
                                                                 </tr>
                                                             </thead>
@@ -160,17 +160,18 @@
                                                             <tbody>
                                                                 <tr v-for="product in products" :key="product.id">
                                                                     <td>{{ product.item_name }}</td>
-                                                                    <td><img :src="ourImage(product.image)"/></td>
+                                                                    <td style="width:50px; height:80px;"><img :src="ourImage(product.image)"/></td>
                                                                     <td>{{ product.condition }}</td>
+                                                                    <td>UGX : {{ product.price }}</td>
                                                                     <td>
-                                                                        <button class="btn btn-sm btn-primary me-1"
+                                                                        <button class="btn btn-sm btn-primary me-1 mb-1"
                                                                             @click="onEdit(product.id)"
                                                                             :disabled="loading">
                                                                             Edit
                                                                         </button>
 
-                                                                        <button class="btn btn-sm btn-danger"
-                                                                            @click="deleteCategory(product.id)"
+                                                                        <button class="btn btn-sm btn-danger mb-1"
+                                                                            @click="deleteProduct(product.id)"
                                                                             :disabled="loading">
                                                                             Delete
                                                                         </button>
@@ -207,7 +208,6 @@
                 </div>
             </div>
         </div>
-
         <!-- Footer -->
         <AppFooter />
     </div>
@@ -228,6 +228,8 @@ let products = ref([])
 let links = ref([])
 
 let searchQuery = ref('')
+
+const loading = ref(false)
 
 
 onMounted(async () => {
@@ -264,6 +266,45 @@ const changePage = (link) => {
         links.value = response.data.products.links
     })
 }
+
+ /**
+     * Redirect EDIT Product
+     */
+     const onEdit = (id) => {
+        router.push(`/products/${id}/edit`)
+    }
+
+/**
+     * DELETE Product
+     */
+     const deleteProduct = (id) => {
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You won’t be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, delete it!",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                loading.value = true
+    
+                axios.delete(`/api/products/${id}`)
+                    .then(() => {
+                        Swal.fire(
+                            "Deleted!",
+                            "Product deleted successfully.",
+                            "success"
+                        )
+                        getMyProducts()
+                    })
+                    .finally(() => {
+                        loading.value = false
+                    })
+            }
+        })
+    }
 
 </script>
 

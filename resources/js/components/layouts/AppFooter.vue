@@ -8,7 +8,7 @@
                     <div class="col-lg-4 col-md-6 mb-4">
                         <div class="footer-brand mb-3">
                             <router-link to="/" class="navbar-brand text-white">
-                                <i class="bi bi-shop me-2"></i>E-Shop
+                                <i class="bi bi-shop me-2"></i> Ugatrade Online Shop
                             </router-link>
                         </div>
                         <p class="text-light mb-4">
@@ -134,7 +134,7 @@
                 <div class="row align-items-center">
                     <div class="col-md-6">
                         <p class="mb-0 text-center text-md-start">
-                            &copy; {{ currentYear }} E-Shop. All rights reserved.
+                            &copy; {{ currentYear }} Ugatrade Online Shop. All rights reserved.
                         </p>
                     </div>
                     <div class="col-md-6">
