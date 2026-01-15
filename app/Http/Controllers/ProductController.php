@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
 use Intervention\Image\Laravel\Facades\Image;
 
 class ProductController extends Controller
@@ -83,6 +84,8 @@ class ProductController extends Controller
         $product->description = $request->description;
         $product->price      = $request->price;
         $product->condition  = $request->condition;
+        
+        $product->seller_id  = Auth::user()->id;
 
         if (!empty($request->image)) {
             try {
@@ -128,15 +131,18 @@ class ProductController extends Controller
     ]);
 }
 
-public function getMyProducts(Request $request)
+public function getMyProducts()
 {
-    $products = Product::where('seller_id', $request->user()->id)
-        ->orderBy('created_at', 'desc')
-        ->paginate(10);
+    $products = Product::query();
+
+    // $products = Product::where('seller_id', auth()->user()->id)
+    //     ->orderBy('created_at', 'desc')
+    //     ->paginate(10);
+
+    $products = $products->where('seller_id', auth()->user()->id)->latest()->paginate(2);
     
     return response()->json([
-        'success' => true,
         'products' => $products
-    ]);
+    ], 200);
 }
 }

@@ -27,6 +27,8 @@ import AdminDashboard from '../components/dashboard/AdminDashboard.vue'
 import SellerDashboard from '../components/dashboard/SellerDashboard.vue'
 import BuyerDashboard from '../components/dashboard/BuyerDashboard.vue'
 
+import SellerIndex from '../components/sellers/Index.vue'
+
 
 const routes =[ 
 {
@@ -86,6 +88,11 @@ const routes =[
 //     component: () => import('../components/profile/Index.vue'),
 //     meta: { requiresAuth: true }
 // },
+{
+    path:'/my-products',
+    name: 'sellers.index',
+    component: SellerIndex,
+},
 {
     path:'/products/create',
     name: 'products.create',

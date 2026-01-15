@@ -138,7 +138,7 @@ onMounted(() => {
     position: relative;
     z-index: 1;
     text-align: left;
-    top: 50%;
+    margin-top: 20%;
     transform: translateY(-50%);
     max-width: 600px;
     padding: 2rem;

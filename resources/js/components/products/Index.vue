@@ -398,10 +398,6 @@
     </template>
     
     <style scoped>
-    /* Keep all your existing styles from the original file */
-    /* ... (all your existing styles remain the same) ... */
-    
-    /* Additional styles for the updated layout */
     .page-header {
         margin-top: 2rem;
     }

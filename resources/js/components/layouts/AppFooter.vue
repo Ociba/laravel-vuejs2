@@ -119,7 +119,7 @@
                             <div class="input-group">
                                 <input type="email" class="form-control" placeholder="Your email" v-model="email">
                                 <button class="btn btn-primary" @click="subscribeNewsletter">
-                                    <i class="bi bi-send"></i>
+                                    <i class="bi bi-send"></i> Submit
                                 </button>
                             </div>
                         </div>

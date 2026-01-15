@@ -3,7 +3,7 @@
         <div class="container">
             <!-- Logo/Brand -->
             <router-link class="navbar-brand fw-bold text-primary" to="/">
-                <i class="bi bi-shop me-2"></i>MarketHub
+                <i class="bi bi-shop me-2"></i>Ugatrade
             </router-link>
 
             <!-- Mobile Toggle Button -->
@@ -84,6 +84,14 @@
                         </ul>
                     </li>
 
+
+                     <!-- For Admin -->
+                     <li class="nav-item" v-if="authStore.isAuthenticated && authStore.isAdmin">
+                        <router-link class="nav-link" to="/dashboard/admin">
+                            <i class="bi bi-speedometer2 me-1"></i>Admin Dashboard
+                        </router-link>
+                    </li>
+
                     <!-- For Sellers -->
                     <li class="nav-item" v-if="authStore.isAuthenticated && authStore.isSeller">
                         <router-link class="nav-link" to="/dashboard/seller">
@@ -125,11 +133,11 @@
                             >
                             <button 
                                 v-if="searchQuery" 
-                                class="btn btn-outline-secondary border-start-0" 
+                                class="btn btn-outline-secondary border-start-0 text-white" 
                                 @click="clearSearch"
                                 type="button"
                             >
-                                <i class="bi bi-x"></i>
+                                <i class="bi bi-x"></i> 
                             </button>
                             <button 
                                 class="btn btn-primary" 
@@ -137,7 +145,7 @@
                                 :disabled="searchLoading"
                                 type="button"
                             >
-                                <i class="bi bi-search"></i>
+                                <i class="bi bi-search"></i> Search
                             </button>
                         </div>
                     </div>
@@ -240,7 +248,7 @@
                         >
                         <button 
                             v-if="mobileSearchQuery" 
-                            class="btn btn-outline-secondary" 
+                            class="btn btn-outline-secondary text-white" 
                             @click="clearMobileSearch"
                             type="button"
                         >
@@ -249,7 +257,7 @@
                     </div>
                     <div class="d-flex justify-content-between">
                         <button 
-                            class="btn btn-primary btn-sm" 
+                            class="btn btn-primary btn-sm text-white" 
                             @click="performMobileSearch"
                             :disabled="searchLoading"
                         >
@@ -403,7 +411,7 @@ const logout = async () => {
 .search-group {
     position: relative;
     min-width: 300px;
-    border-radius: 25px;
+    border-radius: 2px;
     overflow: visible;
     border: 1px solid #dee2e6;
     transition: all 0.3s ease;
@@ -433,7 +441,7 @@ const logout = async () => {
 }
 
 .search-group .btn {
-    border-radius: 0 25px 25px 0;
+    border-radius: 0 2px 2px 0;
     padding: 0.5rem 1.5rem;
 }
 
