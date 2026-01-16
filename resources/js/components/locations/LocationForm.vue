@@ -15,7 +15,7 @@
                 <div class="dashboard-header mt-5">
                     <div class="header-content">
                         <h1 class="page-title">
-                            <i class="bi bi-plus-circle me-2"></i>Categories
+                            <i class="bi bi-plus-circle me-2"></i>Location
                         </h1>
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb">
@@ -23,7 +23,7 @@
                                     <router-link to="/dashboard/seller">Dashboard</router-link>
                                 </li>
                                 <li class="breadcrumb-item">
-                                    Categories
+                                    Locations
                                 </li>
                             </ol>
                         </nav>
@@ -57,31 +57,18 @@
                                     <template v-else>
                                         <!-- HEADER -->
                                         <h5 class="mb-4">
-                                            {{ editMode ? "Edit Category" : "Create Category" }}
+                                            {{ editMode ? "Edit Location" : "Create Location" }}
                                         </h5>
 
                                         <!-- CATEGORY -->
                                         <div class="mb-4 row">
                                             <label class="col-form-label">
-                                                Category
+                                                Location (District)
                                             </label>
                                             <div class="col-sm-12">
-                                                <input type="text" class="form-control" v-model="form.category" />
-                                                <small class="text-danger" v-if="errors.category">
-                                                    {{ errors.category[0] }}
-                                                </small>
-                                            </div>
-                                        </div>
-
-                                        <!-- CODE -->
-                                        <div class="mb-4 row">
-                                            <label class="col-form-label">
-                                                Code
-                                            </label>
-                                            <div class="col-sm-12">
-                                                <input type="text" class="form-control" v-model="form.code" />
-                                                <small class="text-danger" v-if="errors.code">
-                                                    {{ errors.code[0] }}
+                                                <input type="text" class="form-control" v-model="form.location" />
+                                                <small class="text-danger" v-if="errors.location">
+                                                    {{ errors.location[0] }}
                                                 </small>
                                             </div>
                                         </div>
@@ -89,12 +76,12 @@
                                         <!-- ACTIONS -->
                                         <div class="d-flex gap-2">
                                             <button class="btn btn-outline-secondary"
-                                                @click="router.push('/categories')">
+                                                @click="router.push('/locations')">
                                                 Back
                                             </button>
 
                                             <button class="btn btn-dark" :disabled="loading" @click="handleSave">
-                                                {{ loading ? "Saving..." : "Save Category" }}
+                                                {{ loading ? "Saving..." : "Save" }}
                                             </button>
                                         </div>
                                     </template>
@@ -124,8 +111,7 @@ const route = useRoute()
  * FORM STATE
  */
 const form = reactive({
-    category: "",
-    code: "",
+    location: "",
 })
 
 /**
@@ -144,25 +130,24 @@ onMounted(async () => {
         editMode.value = true
         pageLoading.value = true   // 🔹 start page loading
 
-        await fetchCategory()
+        await fetchLocation()
 
         pageLoading.value = false  // 🔹 stop after fetch
     }
 })
 
 /**
- * FETCH CATEGORY FOR EDIT
+ * FETCH LOCATION FOR EDIT
  */
-const fetchCategory = async () => {
+const fetchLocation = async () => {
     try {
         const response = await axios.get(
-            `/api/categories/${route.params.id}/edit`
+            `/api/location/${route.params.id}/edit`
         )
 
-        form.category = response.data.category.category
-        form.code = response.data.category.code
+        form.location = response.data.location.location
     } catch (error) {
-        console.error("Failed to load category", error)
+        console.error("Failed to load location", error)
     }
 }
 
@@ -170,25 +155,25 @@ const fetchCategory = async () => {
  * SAVE HANDLER
  */
 const handleSave = () => {
-    editMode.value ? updateCategory() : createCategory()
+    editMode.value ? updateLocation() : createLocation()
 }
 
 /**
- * CREATE CATEGORY
+ * CREATE LOCATION
  */
-const createCategory = async () => {
+const createLocation = async () => {
     loading.value = true
     errors.value = {}
 
     try {
-        await axios.post("/api/categories", form)
+        await axios.post("/api/location", form)
 
         toast.fire({
             icon: "success",
-            title: "Category Added Successfully",
+            title: "Location Added Successfully",
         })
 
-        router.push("/categories")
+        router.push("/locations")
     } catch (error) {
         if (error.response?.status === 422) {
             errors.value = error.response.data.errors
@@ -199,24 +184,24 @@ const createCategory = async () => {
 }
 
 /**
- * UPDATE CATEGORY
+ * UPDATE LOCATION
  */
-const updateCategory = async () => {
+const updateLocation = async () => {
     loading.value = true
     errors.value = {}
 
     try {
         await axios.put(
-            `/api/categories/${route.params.id}`,
+            `/api/location/${route.params.id}`,
             form
         )
 
         toast.fire({
             icon: "success",
-            title: "Category Updated Successfully",
+            title: "Location Updated Successfully",
         })
 
-        router.push("/categories")
+        router.push("/locations")
     } catch (error) {
         if (error.response?.status === 422) {
             errors.value = error.response.data.errors

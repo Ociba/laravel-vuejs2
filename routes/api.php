@@ -1,11 +1,15 @@
 <?php
 
+use App\Http\Controllers\AdchargeController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use  App\Http\Controllers\ProductController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\TypeController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ColorController;
+use App\Http\Controllers\LocationController;
+use App\Http\Controllers\MeasureController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -36,6 +40,36 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/products/{product}/edit', [ProductController::class, 'edit']);
     Route::put('/products/{product}', [ProductController::class, 'update']);
     Route::delete('/products/{product}', [ProductController::class, 'destroy']);
+
+    //Colors Routes
+
+    Route::post('/color', [ColorController::class, 'store']);
+    Route::get('/colors', [ColorController::class, 'getColor']);
+    Route::get('/color/{color}/edit', [ColorController::class, 'edit']);
+    Route::put('/color/{color}', [ColorController::class, 'update']);
+    Route::delete('/color/{color}', [ColorController::class, 'destroy']);
+    
+    //Measure Routes
+    Route::post('/measure', [MeasureController::class, 'store']);
+    Route::get('/measures', [MeasureController::class, 'getMeasure']);
+    Route::get('/measure/{measure}/edit', [MeasureController::class, 'edit']);
+    Route::put('/measure/{measure}', [MeasureController::class, 'update']);
+    Route::delete('/measure/{measure}', [MeasureController::class, 'destroy']);
+
+    //Location Routes
+    Route::post('/location', [LocationController::class, 'store']);
+    Route::get('/locations', [LocationController::class, 'getLocation']);
+    Route::get('/location/{location}/edit', [LocationController::class, 'edit']);
+    Route::put('/location/{location}', [LocationController::class, 'update']);
+    Route::delete('/location/{location}', [LocationController::class, 'destroy']);
+
+    //Adcharges Routes
+    Route::post('/adcharge', [AdchargeController::class, 'store']);
+    Route::get('/adcharges', [AdchargeController::class, 'getAdcharge']);
+    Route::get('/adcharge/{adcharge}/edit', [AdchargeController::class, 'edit']);
+    Route::put('/adcharge/{adcharge}', [AdchargeController::class, 'update']);
+    Route::delete('/adcharge/{adcharge}', [AdchargeController::class, 'destroy']);
+
 });
 // Route::post('/products',[ProductController::class,'store']);
 // Route::get('/products',[ProductController::class,'index']);

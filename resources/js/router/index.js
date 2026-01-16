@@ -17,6 +17,24 @@ import CategoryIndex from '../components/categories/Index.vue'
 
 import CategoryForm from '../components/categories/CategoryForm.vue'
 
+
+import ColorForm from '../components/colors/ColorForm.vue'
+
+
+import ColorIndex from '../components/colors/Index.vue'
+
+import MeasureIndex from '../components/measures/Index.vue'
+
+import MeasureForm from '../components/measures/MeasureForm.vue'
+
+import LocationIndex from '../components/locations/Index.vue'
+
+import LocationForm from '../components/locations/LocationForm.vue'
+
+import AdchargesIndex from '../components/adcharges/Index.vue'
+
+import AdchargesForm from '../components/adcharges/AdchargesForm.vue'
+
 import TypeIndex from '../components/types/Index.vue'
 
 import TypeForm from "../components/types/TypeForm.vue";
@@ -133,6 +151,66 @@ const routes =[
     path: '/types/:id/edit',
     name: 'types.edit',
     component: TypeForm
+},
+{
+    path:'/colors',
+    name: 'colors.index',
+    component: ColorIndex,
+},
+{
+    path:'/color/create',
+    name: 'colors.create',
+    component: ColorForm,
+},
+{
+    path: '/color/:id/edit',
+    name: 'colors.edit',
+    component: ColorForm
+},
+{
+    path:'/measures',
+    name: 'measures.index',
+    component: MeasureIndex,
+},
+{
+    path:'/measure/create',
+    name: 'measures.create',
+    component: MeasureForm,
+},
+{
+    path: '/measure/:id/edit',
+    name: 'measures.edit',
+    component: MeasureForm
+},
+{
+    path:'/locations',
+    name: 'locations.index',
+    component: LocationIndex,
+},
+{
+    path:'/location/create',
+    name: 'locatios.create',
+    component: LocationForm,
+},
+{
+    path: '/location/:id/edit',
+    name: 'locations.edit',
+    component: LocationForm
+},
+{
+    path:'/adcharges',
+    name: 'adcharges.index',
+    component: AdchargesIndex,
+},
+{
+    path:'/adcharge/create',
+    name: 'adcharges.create',
+    component: AdchargesForm,
+},
+{
+    path: '/adcharge/:id/edit',
+    name: 'adcharges.edit',
+    component: AdchargesForm
 },
 {
     path:'/:pathMatch(.*)*',

@@ -14,7 +14,7 @@
                 <div class="dashboard-header mt-5">
                     <div class="header-content">
                         <h1 class="page-title">
-                            <i class="bi bi-plus-circle me-2"></i>Categories
+                            <i class="bi bi-plus-circle me-2"></i>Adcharge
                         </h1>
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb">
@@ -22,7 +22,7 @@
                                     <router-link to="/dashboard/seller">Dashboard</router-link>
                                 </li>
                                 <li class="breadcrumb-item">
-                                    Categories
+                                    Adcharges
                                 </li>
                             </ol>
                         </nav>
@@ -47,13 +47,13 @@
                                     <!-- HEADER -->
                                     <div class="title-header option-title mb-3 d-flex align-items-center">
                                         <!-- LEFT -->
-                                        <h5 class="mb-0">All Categories</h5>
+                                        <h5 class="mb-0">All Adcharge</h5>
 
                                         <!-- RIGHT -->
                                         <div class="ms-auto d-flex gap-2">
 
-                                            <button @click="categoryForm" class="btn btn-success" :disabled="loading">
-                                                Add New Category
+                                            <button @click="AdchargeForm" class="btn btn-success" :disabled="loading">
+                                                Add New Ad Charge
                                             </button>
                                         </div>
                                     </div>
@@ -70,7 +70,7 @@
                                         <div class="spinner-border text-primary" role="status">
                                             <span class="visually-hidden">Loading...</span>
                                         </div>
-                                        <p class="mt-2">Loading categories...</p>
+                                        <p class="mt-2">Loading Ads Charges...</p>
                                     </div>
 
                                     <!-- TABLE -->
@@ -78,32 +78,36 @@
                                         <table class="table table-bordered">
                                             <thead>
                                                 <tr>
-                                                    <th>Category</th>
-                                                    <th>Code</th>
+                                                    <th>Offer</th>
+                                                    <th>Charge</th>
+                                                    <th>Trial Eligibility</th>
+                                                    <th>Status</th>
                                                     <th>Action</th>
                                                 </tr>
                                             </thead>
 
                                             <tbody>
-                                                <tr v-for="category in categories" :key="category.id">
-                                                    <td>{{ category.category }}</td>
-                                                    <td>{{ category.code }}</td>
+                                                <tr v-for="adcharge in adcharges" :key="adcharge.id">
+                                                    <td>{{ adcharges.offer }}</td>
+                                                    <td>{{ adcharges.charge }}</td>
+                                                     <td>{{ adcharges.is_trial_eligible }}</td>
+                                                     <td>{{ adcharges.status }}</td>
                                                     <td>
                                                         <button class="btn btn-sm btn-primary me-2"
-                                                            @click="onEdit(category.id)" :disabled="loading">
+                                                            @click="onEdit(adcharge.id)" :disabled="loading">
                                                             Edit
                                                         </button>
 
                                                         <button class="btn btn-sm btn-danger"
-                                                            @click="deleteCategory(category.id)" :disabled="loading">
+                                                            @click="deleteAdcharge(adcharge.id)" :disabled="loading">
                                                             Delete
                                                         </button>
                                                     </td>
                                                 </tr>
 
-                                                <tr v-if="categories.length === 0">
+                                                <tr v-if="adcharges.length === 0">
                                                     <td colspan="3" class="text-center">
-                                                        No categories found
+                                                        No Adcharge Found
                                                     </td>
                                                 </tr>
                                             </tbody>
@@ -144,30 +148,30 @@ const router = useRouter()
 /**
  * STATE
  */
-const categories = ref([])
+const adcharges = ref([])
 const links = ref([])
 const searchQuery = ref("")
 const loading = ref(false)
 
 /**
- * FETCH CATEGORIES ON LOAD
+ * FETCH ADCHARGE ON LOAD
  */
 onMounted(() => {
-    getCategories()
+    getAdcharge()
 })
 
 /**
  * WATCH SEARCH INPUT
  */
 watch(searchQuery, () => {
-    getCategories()
+    getAdcharge()
 })
 
 /**
  * GO TO CREATE PAGE
  */
-const categoryForm = () => {
-    router.push("/categories/create")
+const AdchargeForm = () => {
+    router.push("/adcharge/create")
 }
 
 /**
@@ -178,18 +182,18 @@ const Home = () => {
 }
 
 /**
- * GET CATEGORIES FROM API
+ * GET ADCHARGE FROM API
  */
-const getCategories = async () => {
+const getAdcharge = async () => {
     loading.value = true
 
     try {
         const response = await axios.get(
-            `/api/categories?searchQuery=${searchQuery.value}`
+            `/api/adcharges?searchQuery=${searchQuery.value}`
         )
 
-        categories.value = response.data.categories.data
-        links.value = response.data.categories.links
+        adcharges.value = response.data.adcharges.data
+        links.value = response.data.adcharges.links
     } catch (error) {
         console.error(error)
     } finally {
@@ -207,8 +211,8 @@ const changePage = (link) => {
 
     axios.get(link.url)
         .then((response) => {
-            categories.value = response.data.categories.data
-            links.value = response.data.categories.links
+            adcharges.value = response.data.adcharges.data
+            links.value = response.data.adcharges.links
         })
         .finally(() => {
             loading.value = false
@@ -216,16 +220,16 @@ const changePage = (link) => {
 }
 
 /**
- * EDIT CATEGORY
+ * EDIT ADCHARGE
  */
 const onEdit = (id) => {
-    router.push(`/categories/${id}/edit`)
+    router.push(`/adcharge/${id}/edit`)
 }
 
 /**
- * DELETE CATEGORY
+ * DELETE ADCHARGE
  */
-const deleteCategory = (id) => {
+const deleteAdcharge = (id) => {
     Swal.fire({
         title: "Are you sure?",
         text: "You won’t be able to revert this!",
@@ -238,14 +242,14 @@ const deleteCategory = (id) => {
         if (result.isConfirmed) {
             loading.value = true
 
-            axios.delete(`/api/categories/${id}`)
+            axios.delete(`/api/adcharge/${id}`)
                 .then(() => {
                     Swal.fire(
                         "Deleted!",
-                        "Category deleted successfully.",
+                        "Adcharge deleted successfully.",
                         "success"
                     )
-                    getCategories()
+                    getAdcharge()
                 })
                 .finally(() => {
                     loading.value = false

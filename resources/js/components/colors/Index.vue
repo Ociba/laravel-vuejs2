@@ -8,13 +8,14 @@
         <div class="dashboard-container mt-2">
             <!-- Sidebar -->
             <SellerSidebar />
+
             <!-- Main Content -->
             <div class="dashboard-main">
                 <!-- Dashboard Header -->
                 <div class="dashboard-header mt-5">
                     <div class="header-content">
                         <h1 class="page-title">
-                            <i class="bi bi-plus-circle me-2"></i>Categories
+                            <i class="bi bi-plus-circle me-2"></i>Colors
                         </h1>
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb">
@@ -22,7 +23,7 @@
                                     <router-link to="/dashboard/seller">Dashboard</router-link>
                                 </li>
                                 <li class="breadcrumb-item">
-                                    Categories
+                                    Colors
                                 </li>
                             </ol>
                         </nav>
@@ -47,13 +48,13 @@
                                     <!-- HEADER -->
                                     <div class="title-header option-title mb-3 d-flex align-items-center">
                                         <!-- LEFT -->
-                                        <h5 class="mb-0">All Categories</h5>
+                                        <h5 class="mb-0">All Colors</h5>
 
                                         <!-- RIGHT -->
                                         <div class="ms-auto d-flex gap-2">
 
-                                            <button @click="categoryForm" class="btn btn-success" :disabled="loading">
-                                                Add New Category
+                                            <button @click="addColorForm" class="btn btn-success" :disabled="loading">
+                                                Add New Color
                                             </button>
                                         </div>
                                     </div>
@@ -61,7 +62,7 @@
 
                                     <!-- SEARCH -->
                                     <div class="mb-3">
-                                        <input type="search" class="form-control" placeholder="Search category..."
+                                        <input type="search" class="form-control" placeholder="Search color..."
                                             v-model="searchQuery" :disabled="loading" />
                                     </div>
 
@@ -70,7 +71,7 @@
                                         <div class="spinner-border text-primary" role="status">
                                             <span class="visually-hidden">Loading...</span>
                                         </div>
-                                        <p class="mt-2">Loading categories...</p>
+                                        <p class="mt-2">Loading Colors...</p>
                                     </div>
 
                                     <!-- TABLE -->
@@ -78,32 +79,30 @@
                                         <table class="table table-bordered">
                                             <thead>
                                                 <tr>
-                                                    <th>Category</th>
-                                                    <th>Code</th>
+                                                    <th>Color</th>
                                                     <th>Action</th>
                                                 </tr>
                                             </thead>
 
                                             <tbody>
-                                                <tr v-for="category in categories" :key="category.id">
-                                                    <td>{{ category.category }}</td>
-                                                    <td>{{ category.code }}</td>
+                                                <tr v-for="color in colors" :key="color.id">
+                                                    <td>{{ color.color }}</td>
                                                     <td>
                                                         <button class="btn btn-sm btn-primary me-2"
-                                                            @click="onEdit(category.id)" :disabled="loading">
+                                                            @click="onEdit(color.id)" :disabled="loading">
                                                             Edit
                                                         </button>
 
                                                         <button class="btn btn-sm btn-danger"
-                                                            @click="deleteCategory(category.id)" :disabled="loading">
+                                                            @click="deleteColor(color.id)" :disabled="loading">
                                                             Delete
                                                         </button>
                                                     </td>
                                                 </tr>
 
-                                                <tr v-if="categories.length === 0">
+                                                <tr v-if="colors.length === 0">
                                                     <td colspan="3" class="text-center">
-                                                        No categories found
+                                                        No colors found
                                                     </td>
                                                 </tr>
                                             </tbody>
@@ -144,30 +143,30 @@ const router = useRouter()
 /**
  * STATE
  */
-const categories = ref([])
+const colors = ref([])
 const links = ref([])
 const searchQuery = ref("")
 const loading = ref(false)
 
 /**
- * FETCH CATEGORIES ON LOAD
+ * FETCH colors ON LOAD
  */
 onMounted(() => {
-    getCategories()
+    getColors()
 })
 
 /**
  * WATCH SEARCH INPUT
  */
 watch(searchQuery, () => {
-    getCategories()
+    getColors()
 })
 
 /**
  * GO TO CREATE PAGE
  */
-const categoryForm = () => {
-    router.push("/categories/create")
+const addColorForm = () => {
+    router.push("/color/create")
 }
 
 /**
@@ -178,18 +177,18 @@ const Home = () => {
 }
 
 /**
- * GET CATEGORIES FROM API
+ * GET colors FROM API
  */
-const getCategories = async () => {
+const getColors = async () => {
     loading.value = true
 
     try {
         const response = await axios.get(
-            `/api/categories?searchQuery=${searchQuery.value}`
+            `/api/colors?searchQuery=${searchQuery.value}`
         )
 
-        categories.value = response.data.categories.data
-        links.value = response.data.categories.links
+        colors.value = response.data.colors.data
+        links.value = response.data.colors.links
     } catch (error) {
         console.error(error)
     } finally {
@@ -207,8 +206,8 @@ const changePage = (link) => {
 
     axios.get(link.url)
         .then((response) => {
-            categories.value = response.data.categories.data
-            links.value = response.data.categories.links
+            colors.value = response.data.colors.data
+            links.value = response.data.colors.links
         })
         .finally(() => {
             loading.value = false
@@ -216,16 +215,16 @@ const changePage = (link) => {
 }
 
 /**
- * EDIT CATEGORY
+ * EDIT color
  */
 const onEdit = (id) => {
-    router.push(`/categories/${id}/edit`)
+    router.push(`/color/${id}/edit`)
 }
 
 /**
- * DELETE CATEGORY
+ * DELETE color
  */
-const deleteCategory = (id) => {
+const deleteColor = (id) => {
     Swal.fire({
         title: "Are you sure?",
         text: "You won’t be able to revert this!",
@@ -238,14 +237,14 @@ const deleteCategory = (id) => {
         if (result.isConfirmed) {
             loading.value = true
 
-            axios.delete(`/api/categories/${id}`)
+            axios.delete(`/api/color/${id}`)
                 .then(() => {
                     Swal.fire(
                         "Deleted!",
-                        "Category deleted successfully.",
+                        "color deleted successfully.",
                         "success"
                     )
-                    getCategories()
+                    getColors()
                 })
                 .finally(() => {
                     loading.value = false
@@ -255,5 +254,3 @@ const deleteCategory = (id) => {
 }
 
 </script>
-
-

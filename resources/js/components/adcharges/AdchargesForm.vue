@@ -15,7 +15,7 @@
                 <div class="dashboard-header mt-5">
                     <div class="header-content">
                         <h1 class="page-title">
-                            <i class="bi bi-plus-circle me-2"></i>Categories
+                            <i class="bi bi-plus-circle me-2"></i>Adcharges
                         </h1>
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb">
@@ -23,7 +23,7 @@
                                     <router-link to="/dashboard/seller">Dashboard</router-link>
                                 </li>
                                 <li class="breadcrumb-item">
-                                    Categories
+                                    Adcharges
                                 </li>
                             </ol>
                         </nav>
@@ -57,31 +57,33 @@
                                     <template v-else>
                                         <!-- HEADER -->
                                         <h5 class="mb-4">
-                                            {{ editMode ? "Edit Category" : "Create Category" }}
+                                            {{ editMode ? "Edit Adcharges" : "Create Adcharges" }}
                                         </h5>
 
-                                        <!-- CATEGORY -->
-                                        <div class="mb-4 row">
-                                            <label class="col-form-label">
-                                                Category
-                                            </label>
-                                            <div class="col-sm-12">
-                                                <input type="text" class="form-control" v-model="form.category" />
-                                                <small class="text-danger" v-if="errors.category">
-                                                    {{ errors.category[0] }}
-                                                </small>
-                                            </div>
+                                        <!-- ADCHARGE -->
+                                        <div class="mb-4">
+                                            <label class="form-label">Offer</label>
+                                            <select class="form-select" v-model="form.offer">
+                                                <option value="">Select Offer</option>
+                                                <option v-bind:flash="flash">
+                                                    Flash
+                                                </option>
+                                                <option v-bind:promotion="promotion">
+                                                    Promotion         
+                                                </option>
+                                            </select>
+                                            <small v-if="errors.offer" class="text-danger">
+                                                {{ errors.offer[0] }}
+                                            </small>
                                         </div>
-
-                                        <!-- CODE -->
                                         <div class="mb-4 row">
                                             <label class="col-form-label">
-                                                Code
+                                                Amount
                                             </label>
                                             <div class="col-sm-12">
-                                                <input type="text" class="form-control" v-model="form.code" />
-                                                <small class="text-danger" v-if="errors.code">
-                                                    {{ errors.code[0] }}
+                                                <input type="number" class="form-control" v-model="form.charge" />
+                                                <small class="text-danger" v-if="errors.charge">
+                                                    {{ errors.charge[0] }}
                                                 </small>
                                             </div>
                                         </div>
@@ -89,12 +91,12 @@
                                         <!-- ACTIONS -->
                                         <div class="d-flex gap-2">
                                             <button class="btn btn-outline-secondary"
-                                                @click="router.push('/categories')">
+                                                @click="router.push('/adcharges')">
                                                 Back
                                             </button>
 
                                             <button class="btn btn-dark" :disabled="loading" @click="handleSave">
-                                                {{ loading ? "Saving..." : "Save Category" }}
+                                                {{ loading ? "Saving..." : "Save" }}
                                             </button>
                                         </div>
                                     </template>
@@ -124,8 +126,8 @@ const route = useRoute()
  * FORM STATE
  */
 const form = reactive({
-    category: "",
-    code: "",
+    offer: "",
+    charge: "",
 })
 
 /**
@@ -144,25 +146,25 @@ onMounted(async () => {
         editMode.value = true
         pageLoading.value = true   // 🔹 start page loading
 
-        await fetchCategory()
+        await fetchAdcharge()
 
         pageLoading.value = false  // 🔹 stop after fetch
     }
 })
 
 /**
- * FETCH CATEGORY FOR EDIT
+ * FETCH ADCHARGE FOR EDIT
  */
-const fetchCategory = async () => {
+const fetchAdcharge = async () => {
     try {
         const response = await axios.get(
-            `/api/categories/${route.params.id}/edit`
+            `/api/adcharge/${route.params.id}/edit`
         )
 
-        form.category = response.data.category.category
-        form.code = response.data.category.code
+        form.offer = response.data.adcharge.offer
+        form.charge = response.data.adcharge.charge
     } catch (error) {
-        console.error("Failed to load category", error)
+        console.error("Failed to load adcharge", error)
     }
 }
 
@@ -170,25 +172,25 @@ const fetchCategory = async () => {
  * SAVE HANDLER
  */
 const handleSave = () => {
-    editMode.value ? updateCategory() : createCategory()
+    editMode.value ? updateAdcharge() : createAdcharge()
 }
 
 /**
- * CREATE CATEGORY
+ * CREATE MEASURE
  */
-const createCategory = async () => {
+const createAdcharge = async () => {
     loading.value = true
     errors.value = {}
 
     try {
-        await axios.post("/api/categories", form)
+        await axios.post("/api/adcharge", form)
 
         toast.fire({
             icon: "success",
-            title: "Category Added Successfully",
+            title: "Adcharge Added Successfully",
         })
 
-        router.push("/categories")
+        router.push("/adcharges")
     } catch (error) {
         if (error.response?.status === 422) {
             errors.value = error.response.data.errors
@@ -199,24 +201,24 @@ const createCategory = async () => {
 }
 
 /**
- * UPDATE CATEGORY
+ * UPDATE ADCHARGE
  */
-const updateCategory = async () => {
+const updateAdcharge = async () => {
     loading.value = true
     errors.value = {}
 
     try {
         await axios.put(
-            `/api/categories/${route.params.id}`,
+            `/api/adcharge/${route.params.id}`,
             form
         )
 
         toast.fire({
             icon: "success",
-            title: "Category Updated Successfully",
+            title: "Adcharges Updated Successfully",
         })
 
-        router.push("/categories")
+        router.push("/adcharges")
     } catch (error) {
         if (error.response?.status === 422) {
             errors.value = error.response.data.errors
