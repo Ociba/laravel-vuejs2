@@ -88,10 +88,10 @@
 
                                             <tbody>
                                                 <tr v-for="adcharge in adcharges" :key="adcharge.id">
-                                                    <td>{{ adcharges.offer }}</td>
-                                                    <td>{{ adcharges.charge }}</td>
-                                                     <td>{{ adcharges.is_trial_eligible }}</td>
-                                                     <td>{{ adcharges.status }}</td>
+                                                    <td>{{ adcharge.offer }}</td>
+                                                    <td>{{ adcharge.charge }}</td>
+                                                     <td>{{ adcharge.is_trial_eligible }}</td>
+                                                     <td>{{ adcharge.status }}</td>
                                                     <td>
                                                         <button class="btn btn-sm btn-primary me-2"
                                                             @click="onEdit(adcharge.id)" :disabled="loading">
