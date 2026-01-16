@@ -55,7 +55,7 @@ class AdchargeController extends Controller
 
     public function update(Request $request, $id){
         $request ->validate([
-            'ofer' =>'required',
+            'offer' =>'required',
             'charge' =>'required',
         ]);
         $adcharge =Adcharge::find($id);
