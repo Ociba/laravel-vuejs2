@@ -34,6 +34,21 @@ class User extends Authenticatable
         'is_active' => 'boolean'
     ];
 
+    protected $keyType = 'string';
+
+    public $incrementing = false;
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            if (empty($model->id)) {
+                $model->id = (string) \Illuminate\Support\Str::uuid();
+            }
+        });
+    }
+
     // Scope methods for user types
     public function scopeAdmins($query)
     {

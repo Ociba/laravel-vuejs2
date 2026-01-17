@@ -5,7 +5,7 @@
         <Navbar />
 
         <!-- Dashboard Layout -->
-        <div class="dashboard-container mt-2">
+        <div class="dashboard-container">
             <!-- Sidebar -->
             <SellerSidebar />
 
@@ -63,7 +63,7 @@
                                         <!-- ADCHARGE -->
                                         <div class="mb-4">
                                             <label class="form-label">Offer</label>
-                                            <select class="form-select" v-model="form.offer">
+                                            <!-- <select class="form-select" v-model="form.offer">
                                                 <option value="">Select Offer</option>
                                                 <option v-bind:flash="flash">
                                                     Flash
@@ -71,7 +71,17 @@
                                                 <option v-bind:promotion="promotion">
                                                     Promotion         
                                                 </option>
-                                            </select>
+                                                <option v-bind:christmas="christmas">
+                                                    Christmas         
+                                                </option>
+                                                <option v-bind:valentine="valentine">
+                                                    Valentine         
+                                                </option>
+                                                <option v-bind:hot="hotdeals">
+                                                    Hot Deals         
+                                                </option>
+                                            </select> -->
+                                            <input type="text" class="form-control" v-model="form.offer" />
                                             <small v-if="errors.offer" class="text-danger">
                                                 {{ errors.offer[0] }}
                                             </small>

@@ -42,11 +42,16 @@
             <router-link to="/locations" class="menu-item">
                 <i class="bi bi-plus-circle"></i>
                 <span>Location</span>
-            </router-link>
+            </router-link> 
 
             <router-link to="/adcharges" class="menu-item">
                 <i class="bi bi-plus-circle"></i>
                 <span>AdCharges</span>
+            </router-link>
+
+            <router-link to="/news-subscription" class="menu-item">
+                <i class="bi bi-plus-circle"></i>
+                <span>News Subscriptions</span>
             </router-link>
 
             <router-link to="/my-products" class="menu-item">

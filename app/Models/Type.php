@@ -11,8 +11,24 @@ class Type extends Model
 
     protected $fillable = ['category_id', 'type'];
 
+    protected $keyType = 'string';
+
+    public $incrementing = false;
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            if (empty($model->id)) {
+                $model->id = (string) \Illuminate\Support\Str::uuid();
+            }
+        });
+    }
+
     public function category()
     {
         return $this->belongsTo(Category::class);
     }
+    
 }

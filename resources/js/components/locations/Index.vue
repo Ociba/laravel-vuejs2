@@ -5,7 +5,7 @@
         <Navbar />
 
         <!-- Dashboard Layout -->
-        <div class="dashboard-container mt-2">
+        <div class="dashboard-container">
             <!-- Sidebar -->
             <SellerSidebar />
             <!-- Main Content -->
@@ -61,7 +61,7 @@
 
                                     <!-- SEARCH -->
                                     <div class="mb-3">
-                                        <input type="search" class="form-control" placeholder="Search category..."
+                                        <input type="search" class="form-control" placeholder="Search Location..."
                                             v-model="searchQuery" :disabled="loading" />
                                     </div>
 

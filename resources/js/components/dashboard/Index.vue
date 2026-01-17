@@ -1,10 +1,10 @@
 <template>
     <div class="dashboard-container">
         <Navbar />
-        
+
         <!-- Dashboard Header -->
         <div class="dashboard-header bg-primary text-white py-4">
-            <div class="container">
+            <div class="containe">
                 <div class="row align-items-center">
                     <div class="col-md-8">
                         <h1 class="h2 mb-2">Dashboard</h1>
@@ -24,7 +24,7 @@
             </div>
         </div>
 
-        <div class="container py-4">
+        <div class="containe py-4">
             <div class="row">
                 <!-- Sidebar -->
                 <div class="col-lg-3 mb-4">
@@ -33,11 +33,8 @@
                             <!-- User Profile Summary -->
                             <div class="user-summary text-center mb-4">
                                 <div class="avatar mb-3">
-                                    <img :src="user.profile_image || '/images/default-avatar.png'" 
-                                         class="rounded-circle" 
-                                         width="80" 
-                                         height="80"
-                                         alt="Profile">
+                                    <img :src="user.profile_image || '/images/default-avatar.png'"
+                                        class="rounded-circle" width="80" height="80" alt="Profile">
                                 </div>
                                 <h5 class="mb-1">{{ user.name }}</h5>
                                 <p class="text-muted small mb-2">{{ user.email }}</p>
@@ -49,88 +46,92 @@
                             <!-- Navigation -->
                             <nav class="dashboard-nav">
                                 <div class="nav flex-column">
-                                    <router-link 
-                                        to="/dashboard" 
-                                        class="nav-link"
-                                        :class="{ active: $route.name === 'role-dashboard' }"
-                                    >
-                                        <i class="bi bi-speedometer2 me-2"></i>
-                                        Dashboard
-                                    </router-link>
-                                    
-                                    <router-link 
-                                        v-if="authStore.isAdmin" 
-                                        to="/dashboard/admin" 
-                                        class="nav-link"
-                                        :class="{ active: $route.name === 'admin-dashboard' }"
-                                    >
-                                        <i class="bi bi-shield-check me-2"></i>
-                                        Admin Panel
-                                    </router-link>
-                                    
-                                    <router-link 
-                                        v-if="authStore.isSeller" 
-                                        to="/dashboard/seller" 
-                                        class="nav-link"
-                                        :class="{ active: $route.name === 'seller-dashboard' }"
-                                    >
+                                    <router-link v-if="authStore.isSeller" to="/dashboard/seller" class="nav-link"
+                                        :class="{ active: $route.name === 'seller-dashboard' }">
                                         <i class="bi bi-shop me-2"></i>
                                         Seller Center
                                     </router-link>
-                                    
-                                    <router-link 
-                                        v-if="authStore.isBuyer" 
-                                        to="/dashboard/buyer" 
-                                        class="nav-link"
-                                        :class="{ active: $route.name === 'buyer-dashboard' }"
-                                    >
+                                    <router-link to="/dashboard" class="nav-link"
+                                        :class="{ active: $route.name === 'role-dashboard' }">
+                                        <i class="bi bi-speedometer2 me-2"></i>
+                                        Dashboard
+                                    </router-link>
+
+                                    <router-link v-if="authStore.isAdmin" to="/dashboard/admin" class="nav-link"
+                                        :class="{ active: $route.name === 'admin-dashboard' }">
+                                        <i class="bi bi-shield-check me-2"></i>
+                                        Admin Panel
+                                    </router-link>
+                                    <router-link v-if="authStore.isBuyer" to="/dashboard/buyer" class="nav-link"
+                                        :class="{ active: $route.name === 'buyer-dashboard' }">
                                         <i class="bi bi-cart me-2"></i>
                                         Buyer Center
                                     </router-link>
 
                                     <div class="nav-divider"></div>
-                                    
-                                    <router-link 
-                                        to="/profile" 
-                                        class="nav-link"
-                                    >
-                                        <i class="bi bi-person me-2"></i>
-                                        My Profile
+
+                                    <router-link to="/categories" class="nav-link">
+                                        <i class="bi bi-plus-circle"></i>
+                                        Categories
                                     </router-link>
-                                    
-                                    <router-link 
-                                        v-if="authStore.isSeller" 
-                                        to="/my-products" 
-                                        class="nav-link"
-                                    >
-                                        <i class="bi bi-grid me-2"></i>
-                                        My Products
+
+                                    <router-link to="/types" class="nav-link">
+                                        <i class="bi bi-plus-circle"></i>
+                                        Types
                                     </router-link>
-                                    
-                                    <router-link 
-                                        v-if="authStore.isSeller" 
-                                        to="/products/create" 
-                                        class="nav-link"
-                                    >
-                                        <i class="bi bi-plus-circle me-2"></i>
-                                        Add Product
+
+                                    <router-link to="/colors" class="nav-link">
+                                        <i class="bi bi-plus-circle"></i>
+                                        Colors
                                     </router-link>
-                                    
-                                    <router-link 
-                                        to="/messages" 
-                                        class="nav-link"
-                                    >
-                                        <i class="bi bi-chat-dots me-2"></i>
-                                        Messages
-                                        <span class="badge bg-primary rounded-pill float-end">3</span>
+
+                                    <router-link v-if="authStore.isAdmin" to="/measures" class="nav-link">
+                                        <i class="bi bi-plus-circle"></i>
+                                        Measures
+                                    </router-link>
+
+                                    <router-link to="/locations" class="nav-link">
+                                        <i class="bi bi-plus-circle"></i>
+                                        Location
+                                    </router-link> 
+
+                                    <router-link to="/adcharges" class="nav-link">
+                                        <i class="bi bi-plus-circle"></i>
+                                        AdCharges
+                                    </router-link>
+
+                                    <router-link to="/news-subscription" class="nav-link">
+                                        <i class="bi bi-plus-circle"></i>
+                                        News Subscription
+                                    </router-link>
+
+                                    <router-link v-if="authStore.isSeller" to="/my-products" class="nav-link">
+                                        <i class="bi bi-grid"></i>
+                                        <span>My Products</span>
+                                        <span class="badge count-badge">{{ productCount }}</span>
+                                    </router-link>
+
+                                    <router-link to="/messages" class="nav-link">
+                                        <i class="bi bi-chat-dots"></i>
+                                        <span>Messages</span>
+                                        <span class="badge count-badge">3</span>
+                                    </router-link>
+
+                                    <router-link to="/profile" class="nav-link">
+                                        <i class="bi bi-person"></i>
+                                        <span>Profile</span>
+                                    </router-link>
+
+                                    <div class="menu-divider"></div>
+
+                                    <router-link to="/help" class="nav-link">
+                                        <i class="bi bi-question-circle"></i>
+                                        <span>Help & Support</span>
                                     </router-link>
 
                                     <div class="nav-divider"></div>
-                                    
-                                    <button 
-                                        class="nav-link text-danger"
-                                        @click="handleLogout"
-                                    >
+
+                                    <button class="nav-link text-danger" @click="handleLogout">
                                         <i class="bi bi-box-arrow-right me-2"></i>
                                         Logout
                                     </button>
@@ -223,7 +224,8 @@ const handleLogout = async () => {
 
 .dashboard-header {
     background: linear-gradient(135deg, #007bff, #0056b3);
-    margin-top: 56px; /* Account for fixed navbar */
+    margin-top: 56px;
+    /* Account for fixed navbar */
 }
 
 .avatar img {
@@ -233,7 +235,7 @@ const handleLogout = async () => {
 
 .dashboard-sidebar {
     position: sticky;
-    top: 100px;
+    margin-top: 3px;
 }
 
 .dashboard-nav .nav-link {

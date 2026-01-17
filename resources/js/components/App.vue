@@ -69,7 +69,67 @@
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
   }
-  
+  .welcome-banner {
+    background: linear-gradient(135deg, #28a745, #20c997);
+}
+
+.bg-purple {
+    background-color: #6f42c1;
+}
+
+.quick-action-card {
+    display: block;
+    padding: 1.5rem;
+    text-align: center;
+    border-radius: 10px;
+    background: #f8f9fa;
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.3s ease;
+    height: 100%;
+}
+
+.quick-action-card:hover {
+    background: white;
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.action-icon {
+    width: 60px;
+    height: 60px;
+    margin: 0 auto;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.5rem;
+}
+
+.table th {
+    border-top: none;
+    font-weight: 600;
+    color: #495057;
+    font-size: 0.9rem;
+}
+
+.table td {
+    vertical-align: middle;
+}
+
+.badge {
+    padding: 0.25em 0.6em;
+    font-weight: 500;
+    font-size: 0.75rem;
+}
+
+.text-truncate {
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
   .shadow-hover {
     transition: box-shadow 0.3s ease;
   }
@@ -109,14 +169,17 @@
 .dashboard-container {
     display: flex;
     min-height: calc(100vh - 76px);
+    margin-top: 25px;
     /* Subtract navbar height */
 }
 
 /* Sidebar Styles */
 .dashboard-sidebar {
     width: 260px;
+    position: sticky;
     background: white;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    margin-top: 50px;
     display: flex;
     flex-direction: column;
     z-index: 100;

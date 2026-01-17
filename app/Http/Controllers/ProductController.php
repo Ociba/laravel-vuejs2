@@ -145,6 +145,13 @@ public function getMyProducts(Request $request)
     ], 200);
 }
 
+public function view($id){
+    $product =Product::find($id);
+    return response()->json([
+        'product' =>$product
+    ], 200);
+}
+
 public function edit($id)
 {
     $product =Product::find($id);

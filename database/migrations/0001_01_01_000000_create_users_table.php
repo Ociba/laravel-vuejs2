@@ -12,16 +12,28 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('users', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->string('name');
+            $table->string('username')->index();
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->enum('user_type', ['admin', 'seller', 'buyer'])->default('seller');
+            $table->string('user_type')->default('buyer')->index();
+            $table->enum('user_status', ['active', 'suspended', 'deleted'])->default('active')->index();
             $table->string('phone')->nullable();
             $table->string('address')->nullable();
             $table->string('profile_image')->nullable();
             $table->boolean('is_active')->default(true);
+            $table->string('google_id')->nullable()->index();
+            $table->string('guest_id')->nullable()->index();
+            $table->boolean('email_notifications')->default(true);
+            $table->foreignId('current_team_id')->nullable()->index();
+            $table->string('profile_photo_path', 2048)->nullable();
+            $table->integer('failed_login_attempts')->default(0);
+            $table->timestamp('last_failed_login')->nullable();
+            $table->timestamp('account_locked_until')->nullable()->index();
+            $table->string('registration_ip')->nullable();
+            $table->string('registration_user_agent')->nullable();
             $table->rememberToken();
             $table->timestamps();
             $table->softDeletes();
@@ -35,7 +47,7 @@ return new class extends Migration
 
         Schema::create('sessions', function (Blueprint $table) {
             $table->string('id')->primary();
-            $table->foreignId('user_id')->nullable()->index();
+            $table->uuid('user_id')->nullable()->index();
             $table->string('ip_address', 45)->nullable();
             $table->text('user_agent')->nullable();
             $table->longText('payload');

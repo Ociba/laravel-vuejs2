@@ -13,6 +13,8 @@ import notFound from '../components/notFound.vue'
 
 import ProductForm from '../components/products/Form.vue'
 
+import SellerView from '../components/sellers/View.vue'
+
 import CategoryIndex from '../components/categories/Index.vue'
 
 import CategoryForm from '../components/categories/CategoryForm.vue'
@@ -37,7 +39,11 @@ import AdchargesForm from '../components/adcharges/AdchargesForm.vue'
 
 import TypeIndex from '../components/types/Index.vue'
 
-import TypeForm from "../components/types/TypeForm.vue";
+import TypeForm from "../components/types/TypeForm.vue"
+
+import  NewsSubscription from "../components/layouts/AppFooter.vue"
+
+import NewsIndex from "../components/subscriptions/News.vue"
 
 // Protected components (will create these)
 import Dashboard from '../components/dashboard/Index.vue'
@@ -53,6 +59,12 @@ const routes =[
     path:'/',
     name: 'products.index',
     component: ProductIndex,
+},
+
+{
+    path: '/subscribe',
+    name: 'layouts.subscribe',
+    component: NewsSubscription
 },
 
 {
@@ -121,6 +133,11 @@ const routes =[
     path:'/products/:id/edit',
     name: 'products.edit',
     component: ProductForm,
+},
+{
+    path:'/products/:id/view',
+    name: 'products.view',
+    component: SellerView,
 },
 {
     path:'/categories',
@@ -212,6 +229,13 @@ const routes =[
     name: 'adcharges.edit',
     component: AdchargesForm
 },
+
+{
+    path:'/news-subscription',
+    name: 'subscriptions.news',
+    component: NewsIndex,
+},
+
 {
     path:'/:pathMatch(.*)*',
     name:'notfound',

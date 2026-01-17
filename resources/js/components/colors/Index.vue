@@ -5,7 +5,7 @@
         <Navbar />
 
         <!-- Dashboard Layout -->
-        <div class="dashboard-container mt-2">
+        <div class="dashboard-container">
             <!-- Sidebar -->
             <SellerSidebar />
 

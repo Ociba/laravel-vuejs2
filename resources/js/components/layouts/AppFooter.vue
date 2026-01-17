@@ -117,10 +117,11 @@
                         <p class="text-light small mb-3">Subscribe to get updates on new products and offers</p>
                         <div class="newsletter-form">
                             <div class="input-group">
-                                <input type="email" class="form-control" placeholder="Your email" v-model="email">
-                                <button class="btn btn-primary" @click="subscribeNewsletter">
+                                <input type="email" class="form-control" placeholder="Your email" v-model="form.email">
+                                <button class="btn btn-primary"  @click="handleSave">
                                     <i class="bi bi-send"></i> Submit
                                 </button>
+                                <small style="color:red;" v-if="errors.email">{{ errors.email }}</small>
                             </div>
                         </div>
                     </div>
@@ -158,18 +159,48 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, reactive, onUnmounted } from 'vue'
+import { useRouter } from "vue-router"
+import axios from "axios"
 
 const currentYear = ref(new Date().getFullYear())
-const email = ref('')
+const errors = ref({})
 const showBackToTop = ref(false)
 
+const router = useRouter()
+
+/**
+ * FORM STATE
+ */
+ const form = reactive({
+    email: "",
+})
+
 // Subscribe to newsletter
-const subscribeNewsletter = () => {
-    if (email.value) {
-        alert(`Thank you for subscribing with ${email.value}!`)
-        email.value = ''
-    }
+const handleSave = () => {
+    
+    axios.post("/api/subscribe", form)
+    .then((response) => {
+
+        toast.fire({
+            icon: "success",
+            title: "Email Added Successfully",
+        })
+
+         // Reset form
+         Object.keys(form).forEach(key => {
+                if (key !== 'status') {
+                    form[key] = ""
+                }
+            })
+            
+        router.push("/")
+
+    }).catch((error) => {
+        if(error.response.status === 422){
+            errors.value = error.response.data.errors
+        }
+    })
 }
 
 // Scroll to top function

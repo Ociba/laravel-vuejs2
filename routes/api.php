@@ -10,6 +10,8 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ColorController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\MeasureController;
+use App\Http\Controllers\NewsLetterSubscriptionController;
+use App\Http\Controllers\SubscriptionController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -37,6 +39,7 @@ Route::middleware('auth:sanctum')->group(function () {
     // Products with seller_id
     Route::post('/products', [ProductController::class, 'store']);
     Route::get('/my-products', [ProductController::class, 'getMyProducts']);
+    Route::get('/products/{product}/view', [ProductController::class, 'view']);
     Route::get('/products/{product}/edit', [ProductController::class, 'edit']);
     Route::put('/products/{product}', [ProductController::class, 'update']);
     Route::delete('/products/{product}', [ProductController::class, 'destroy']);
@@ -68,11 +71,16 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/adcharges', [AdchargeController::class, 'getAdcharge']);
     Route::get('/adcharge/{adcharge}/edit', [AdchargeController::class, 'edit']);
     Route::put('/adcharge/{adcharge}', [AdchargeController::class, 'update']);
-    Route::delete('/adcharge/{adcharge}', [AdchargeController::class, 'destroy']);
+    Route::delete('/adcharge/{adcharge}', [AdchargeController::class, 'destroy']);  
+
+    Route::get('/news-subscription',[SubscriptionController::class,'getNewsSubscription']);
+    Route::delete('/news/{news}', [SubscriptionController::class, 'destroy']);  
 
 });
 // Route::post('/products',[ProductController::class,'store']);
 // Route::get('/products',[ProductController::class,'index']);
+
+Route::post('/subscribe',[NewsLetterSubscriptionController::class,'storeSubscripion']);
 
 Route::post('/categories',[CategoryController::class,'create']);
 Route::get('/categories',[CategoryController::class,'index']);
