@@ -70,7 +70,7 @@ return new class extends Migration
             $table->string('expiry_date')->nullable();
             $table->string('care_inforamtion')->nullable();
             $table->string('store_information')->nullable();
-            $table->string('manufucturing_date')->nullable();
+            $table->string('manufacturing_date')->nullable();
             $table->string('working_hours')->nullable();
             $table->string('photo');
             $table->json('additional_photos')->nullable();

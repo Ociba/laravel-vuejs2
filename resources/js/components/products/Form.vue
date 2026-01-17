@@ -161,16 +161,16 @@
                                                 <div class="col-md-6">
                                                     <label class="form-label">Color</label>
                                                     <div class="input-group input-group-lg">
-                                                        <select class="form-select" v-model="form.color_id">
+                                                        <select class="form-select" v-model="form.color">
                                                             <option value="">Select Color</option>
                                                             <option v-for="color in colors" :key="color.id"
-                                                                :value="color.id">
+                                                                :value="color.color">
                                                                 {{ color.color }}
                                                             </option>
                                                         </select>
                                                     </div>
-                                                    <small v-if="errors.color_id" class="text-danger">
-                                                        {{ errors.color_id[0] }}
+                                                    <small v-if="errors.color" class="text-danger">
+                                                        {{ errors.color[0] }}
                                                     </small>
                                                 </div>
 
@@ -297,6 +297,120 @@
                                                         {{ errors.gender[0] }}
                                                     </small>
                                                 </div>
+                                                 <!-- BRAND -->
+                                                <div class="col-md-6">
+                                                    <label class="form-label required">
+                                                        Brand
+                                                    </label>
+                                                    <div class="input-group input-group-lg">
+                                                        <input type="text" v-model="form.brand"
+                                                            class="form-control"
+                                                            :class="{ 'is-invalid': errors.brand }"
+                                                            placeholder="Brand"  required />
+                                                    </div>
+                                                    <div v-if="errors.brand" class="invalid-feedback d-block">
+                                                        <i class="bi bi-exclamation-triangle me-1"></i>
+                                                        {{ errors.brand[0] }}
+                                                    </div>
+                                                </div>
+                                                 <!-- MEASURES -->
+                                                 <div class="col-md-6">
+                                                    <label class="form-label">Measures</label>
+                                                    <div class="input-group input-group-lg">
+                                                        <select class="form-select" v-model="form.measure">
+                                                            <option value="">Select Measure</option>
+                                                            <option v-for="measure in measures" :key="measure.id"
+                                                                :value="measure.measure">
+                                                                {{ measure.measure }}
+                                                            </option>
+                                                        </select>
+                                                    </div>
+                                                    <small v-if="errors.measure" class="text-danger">
+                                                        {{ errors.measure[0] }}
+                                                    </small>
+                                                </div>
+                                                  <!-- SIZE -->
+                                                <div class="col-md-6">
+                                                    <label class="form-label required">
+                                                        Size
+                                                    </label>
+                                                    <div class="input-group input-group-lg">
+                                                        <input type="text" v-model="form.size"
+                                                            class="form-control"
+                                                            :class="{ 'is-invalid': errors.size }"
+                                                            placeholder="Size"  required />
+                                                    </div>
+                                                    <div v-if="errors.size" class="invalid-feedback d-block">
+                                                        <i class="bi bi-exclamation-triangle me-1"></i>
+                                                        {{ errors.size[0] }}
+                                                    </div>
+                                                </div>
+                                                 <!-- BRAND NAME-->
+                                                 <div class="col-md-6">
+                                                    <label class="form-label required">
+                                                        Brand Name
+                                                    </label>
+                                                    <div class="input-group input-group-lg">
+                                                        <input type="text" v-model="form.brand_name"
+                                                            class="form-control"
+                                                            :class="{ 'is-invalid': errors.brand_name }"
+                                                            placeholder="Brand Name"/>
+                                                    </div>
+                                                    <div v-if="errors.brand_name" class="invalid-feedback d-block">
+                                                        <i class="bi bi-exclamation-triangle me-1"></i>
+                                                        {{ errors.brand_name[0] }}
+                                                    </div>
+                                                </div>
+                                                <!-- OFFERS -->
+                                                <div class="col-md-6">
+                                                    <label class="form-label">Offers</label>
+                                                    <div class="input-group input-group-lg">
+                                                        <select class="form-select" v-model="form.offer">
+                                                            <option value="">Select Offer</option>
+                                                            <option v-for="adcharge in adcharges" :key="adcharge.id"
+                                                                :value="adcharge.offer">
+                                                                {{ adcharge.offer }}
+                                                            </option>
+                                                        </select>
+                                                    </div>
+                                                    <small v-if="errors.offer" class="text-danger">
+                                                        {{ errors.offer[0] }}
+                                                    </small>
+                                                </div>
+                                                <!--start of Produce more other tables -->
+                                                <!-- BRAND NAME-->
+                                                <div class="col-md-6">
+                                                    <label class="form-label required">
+                                                        Breed
+                                                    </label>
+                                                    <div class="input-group input-group-lg">
+                                                        <input type="text" v-model="form.breed"
+                                                            class="form-control"
+                                                            :class="{ 'is-invalid': errors.breed }"
+                                                            placeholder="Breed"/>
+                                                    </div>
+                                                    <div v-if="errors.breed" class="invalid-feedback d-block">
+                                                        <i class="bi bi-exclamation-triangle me-1"></i>
+                                                        {{ errors.breed[0] }}
+                                                    </div>
+                                                </div>
+                                                <!-- BRAND NAME-->
+                                                <div class="col-md-6">
+                                                    <label class="form-label required">
+                                                        Weight
+                                                    </label>
+                                                    <div class="input-group input-group-lg">
+                                                        <input type="text" v-model="form.weight"
+                                                            class="form-control"
+                                                            :class="{ 'is-invalid': errors.weight }"
+                                                            placeholder="Weight"/>
+                                                    </div>
+                                                    <div v-if="errors.weight" class="invalid-feedback d-block">
+                                                        <i class="bi bi-exclamation-triangle me-1"></i>
+                                                        {{ errors.weight[0] }}
+                                                    </div>
+                                                </div>
+                                                <!---End of Produce More other fields-->
                                             </div>
                                         </div>
 
@@ -393,6 +507,13 @@ const form = reactive({
     sales_price: "",
     gender: "",
     condition: "",
+    quantity: "",
+    brand: "",
+    size: "",
+    measure: "",
+    offer: "",
+    manufacturing_date: "",
+    weight: "",
     photo: "",
     status: "available" // default status
 })
@@ -401,6 +522,8 @@ const categories = ref([])
 const types = ref([])
 const colors = ref([])
 const locations = ref([])
+const adcharges = ref([])
+const measures = ref([])
 const errors = ref({})
 const loading = ref(false)
 const pageLoading = ref(true)
@@ -420,6 +543,8 @@ onMounted(async () => {
     await fetchTypes()
     await fetchColors()
     await fetchLocations()
+    await fetchOffers()
+    await fetchMeasures()
     await getMyProducts()
 
 
@@ -469,7 +594,7 @@ const fetchColors = async () => {
 }
 
 /**
- * FETCH Location FOR SELECT
+ * FETCH LOCATIONS FOR SELECT
  */
 const fetchLocations = async () => {
     try {
@@ -477,6 +602,29 @@ const fetchLocations = async () => {
         locations.value = response.data.locations.data || []
     } catch (error) {
         console.error("Failed to fetch colors", error)
+    }
+}
+/**
+ * FETCH OFFERS FOR SELECT
+ */
+ const fetchOffers = async () => {
+    try {
+        const response = await axios.get("/api/adcharges")
+        adcharges.value = response.data.adcharges.data || []
+    } catch (error) {
+        console.error("Failed to fetch offers", error)
+    }
+}
+
+/**
+ * FETCH MEASURES FOR SELECT
+ */
+ const fetchMeasures = async () => {
+    try {
+        const response = await axios.get("/api/measures")
+        measures.value = response.data.measures.data || []
+    } catch (error) {
+        console.error("Failed to fetch measures", error)
     }
 }
 
@@ -498,6 +646,13 @@ const getMyProducts = async () => {
         form.status = response.data.product.status
         form.condition = response.data.product.condition
         form.gender = response.data.product.gender
+        form.quantity = response.data.product.quantity
+        form.brand = response.data.product.brand
+        form.size = response.data.product.size
+        form.measure = response.data.product.measure
+        form.offer = response.data.product.offer
+        form.manufacturing_date = response.data.product.manufacturing_date
+        form.weight = response.data.product.weight
         form.description = response.data.product.description
         form.photo = response.data.product.photo
     } catch (error) {
@@ -525,7 +680,8 @@ const descriptionLength = computed(() => {
 
 const isFormValid = computed(() => {
     return form.item_name && form.description && form.sales_price && form.condition && form.category_id
-        && form.type_id && form.color_id && form.location_id && form.gender
+        && form.type_id && form.color_id && form.location_id && form.gender && form.quantity && form.brand
+        && form.size && form.measure && form.offer && form.manufacturing_date && form.breed && form.weight
 })
 
 const calculateFinalPrice = computed(() => {

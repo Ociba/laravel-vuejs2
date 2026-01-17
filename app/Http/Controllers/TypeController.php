@@ -17,7 +17,7 @@ class TypeController extends Controller
 
         return response()->json([
             'types' => $types
-        ]);
+        ],200);
     }
 
     /**
