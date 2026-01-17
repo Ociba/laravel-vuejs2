@@ -76,18 +76,18 @@
                                                         <span class="input-group-text bg-light">UGX</span>
                                                         <input 
                                                             type="number" 
-                                                            v-model="form.price" 
+                                                            v-model="form.sales_price" 
                                                             class="form-control" 
-                                                            :class="{ 'is-invalid': errors.price }"
+                                                            :class="{ 'is-invalid': errors.sales_price }"
                                                             placeholder="0.00"
                                                             min="0"
                                                             step="0.01"
                                                             required
                                                         />
                                                     </div>
-                                                    <div v-if="errors.price" class="invalid-feedback d-block">
+                                                    <div v-if="errors.sales_price" class="invalid-feedback d-block">
                                                         <i class="bi bi-exclamation-triangle me-1"></i>
-                                                        {{ errors.price[0] }}
+                                                        {{ errors.sales_price[0] }}
                                                     </div>
                                                 </div>
 
@@ -227,9 +227,9 @@
                                                         :disabled="loading"
                                                     />
                                                     
-                                                    <div v-if="errors.image" class="invalid-feedback d-block mt-2">
+                                                    <div v-if="errors.photo" class="invalid-feedback d-block mt-2">
                                                         <i class="bi bi-exclamation-triangle me-1"></i>
-                                                        {{ errors.image[0] }}
+                                                        {{ errors.photo[0] }}
                                                     </div>
                                                 </div>
                                             </div>
@@ -277,9 +277,9 @@ const form = reactive({
     item_name: "",
     discount: "",
     description: "",
-    price: "",
+    sales_price: "",
     condition: "",
-    image: "",
+    photo: "",
     status: "",
 })
 
@@ -320,13 +320,13 @@ const editMode = ref(false) //edit product using same form
             )
     
             form.item_name = response.data.product.item_name
-            form.price = response.data.product.price
+            form.sales_price = response.data.product.sales_price
             form.discount = response.data.product.discount
             form.condition = response.data.product.condition
             form.status = response.data.product.status
             form.status = response.data.product.status
             form.description = response.data.product.description
-            form.image = response.data.product.image
+            form.photo = response.data.product.photo
         } catch (error) {
             console.error("Failed to load category", error)
         }
@@ -335,7 +335,7 @@ const editMode = ref(false) //edit product using same form
 
 // Computed properties
 const showImage = computed(() => {
-    return form.image && form.image.length > 0
+    return form.photo && form.photo.length > 0
 })
 
 const descriptionLength = computed(() => {
@@ -343,26 +343,26 @@ const descriptionLength = computed(() => {
 })
 
 const isFormValid = computed(() => {
-    return form.item_name && form.description && form.price && form.condition
+    return form.item_name && form.description && form.sales_price && form.condition
 })
 
 const calculateFinalPrice = computed(() => {
-    if (!form.price) return '0.00'
-    const price = parseFloat(form.price)
+    if (!form.sales_price) return '0.00'
+    const sales_price = parseFloat(form.sales_price)
     const discount = form.discount ? parseFloat(form.discount) : 0
     if (discount > 0) {
-        const discounted = price - (price * discount / 100)
+        const discounted = sales_price - (sales_price * discount / 100)
         return discounted.toFixed(2)
     }
-    return price.toFixed(2)
+    return sales_price.toFixed(2)
 })
 
 const getImage = () => {
-    if (form.image) {
-        if (form.image.indexOf("base64") !== -1) {
-            return form.image
-        } else if (form.image) {
-            return "/upload/" + form.image
+    if (form.photo) {
+        if (form.photo.indexOf("base64") !== -1) {
+            return form.photo
+        } else if (form.photo) {
+            return "/upload/" + form.photo
         }
     }
     return ""
@@ -388,7 +388,7 @@ const handleFileChange = (e) => {
         }
         
         // Check file type
-        if (!file.type.match('image.*')) {
+        if (!file.type.match('photo.*')) {
             window.toast.fire({
                 icon: 'error',
                 title: 'Please select an image file!'
@@ -398,7 +398,7 @@ const handleFileChange = (e) => {
         
         let reader = new FileReader()
         reader.onloadend = () => {
-            form.image = reader.result
+            form.photo = reader.result
         }
         reader.onerror = () => {
             window.toast.fire({
@@ -411,7 +411,7 @@ const handleFileChange = (e) => {
 }
 
 const removeImage = () => {
-    form.image = ""
+    form.photo = ""
     if (fileInput.value) {
         fileInput.value.value = ""
     }

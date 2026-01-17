@@ -104,9 +104,9 @@
         return "/upload/" + img
     }
     
-    const calculateDiscountedPrice = (price, discount) => {
-        if (!discount || discount <= 0) return parseFloat(price).toFixed(2)
-        return (price - (price * discount / 100)).toFixed(2)
+    const calculateDiscountedPrice = (sales_price, discount) => {
+        if (!discount || discount <= 0) return parseFloat(sales_price).toFixed(2)
+        return (sales_price - (sales_price * discount / 100)).toFixed(2)
     }
     
     const newProduct = () => router.push('/products/create')
@@ -287,7 +287,7 @@
                          :key="product.id">
                         <div class="card product-card h-100">
                             <div class="product-image-container p-2">
-                                <img :src="OurImage(product.image)" 
+                                <img :src="OurImage(product.photo)" 
                                      class="card-img-top product-image" 
                                      :alt="product.item_name"
                                      @error="(e) => e.target.src = '/upload/no-image.png'"/>
@@ -303,11 +303,11 @@
                                 <div class="mt-auto">
                                     <div class="mb-2">
                                         <span class="h5 text-primary">
-                                            UGX : {{ calculateDiscountedPrice(product.price, product.discount) }}
+                                            UGX : {{ calculateDiscountedPrice(product.sales_price, product.discount) }}
                                         </span>
                                         <span v-if="product.discount" 
                                               class="text-muted text-decoration-line-through ms-2">
-                                            UGX : {{ product.price }}
+                                            UGX : {{ product.sales_price }}
                                         </span>
                                     </div>
                                     <div class="d-grid gap-2">

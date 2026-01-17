@@ -41,13 +41,13 @@ class ProductController extends Controller
             $query->where('status', 'available');
         }
         
-        // Price range filter (optional)
+        // Sales Price range filter (optional)
         if ($request->has('min_price')) {
-            $query->where('price', '>=', $request->min_price);
+            $query->where('sales_price', '>=', $request->min_price);
         }
         
         if ($request->has('max_price')) {
-            $query->where('price', '<=', $request->max_price);
+            $query->where('sales_price', '<=', $request->max_price);
         }
         
         // Paginate results
@@ -66,9 +66,9 @@ class ProductController extends Controller
             'item_name'   => 'required|string|max:255',
             'discount'    => 'nullable|numeric|min:0|max:100',
             'description' => 'required|string',
-            'price'       => 'required|numeric|min:0',
+            'sales_price'       => 'required|numeric|min:0',
             'condition'   => 'required|string',
-            'image'       => 'nullable|string', // base64
+            'photo'       => 'nullable|string', // base64
         ]);
 
         if ($validator->fails()) {
@@ -82,15 +82,15 @@ class ProductController extends Controller
         $product->item_name  = $request->item_name;
         $product->discount   = $request->discount;
         $product->description = $request->description;
-        $product->price      = $request->price;
+        $product->sales_price      = $request->sales_price;
         $product->condition  = $request->condition;
         
         $product->seller_id  = Auth::user()->id;
 
-        if (!empty($request->image)) {
+        if (!empty($request->photo)) {
             try {
-                $strpos = strpos($request->image, ';');
-                $sub = substr($request->image, 0, $strpos);
+                $strpos = strpos($request->photo, ';');
+                $sub = substr($request->photo, 0, $strpos);
                 $ex = explode('/', $sub)[1];
                 $name = time() . '.' . $ex;
 
@@ -100,16 +100,16 @@ class ProductController extends Controller
                     mkdir($upload_path, 0777, true);
                 }
 
-                Image::read($request->image)
+                Image::read($request->photo)
                     ->resize(200, 200)
                     ->save($upload_path . '/' . $name);
 
-                $product->image = $name;
+                $product->photo = $name;
             } catch (\Throwable $e) {
-                $product->image = 'no-image.png';
+                $product->photo = 'no-image.png';
             }
         } else {
-            $product->image = 'no-image.png';
+            $product->photo = 'no-image.png';
         }
 
         $product->save();
@@ -164,11 +164,11 @@ public  function update(Request $request, $id)
 {
     $request->validate([
         'item_name' => 'required',
-        'price' => 'required',
+        'sales_price' => 'required',
         'condition' => 'required',
         'description' => 'required',
         'status' => 'required',
-        'image' => 'required',
+        'photo' => 'required',
     ]);
 
     $product= Product::find($id);
@@ -176,15 +176,15 @@ public  function update(Request $request, $id)
     $product->item_name  = $request->item_name;
         $product->discount   = $request->discount;
         $product->description = $request->description;
-        $product->price      = $request->price;
+        $product->sales_price      = $request->sales_price;
         $product->condition  = $request->condition;
         
         $product->seller_id  = Auth::user()->id;
 
-        if (!empty($request->image)) {
+        if (!empty($request->photo)) {
             try {
-                $strpos = strpos($request->image, ';');
-                $sub = substr($request->image, 0, $strpos);
+                $strpos = strpos($request->photo, ';');
+                $sub = substr($request->photo, 0, $strpos);
                 $ex = explode('/', $sub)[1];
                 $name = time() . '.' . $ex;
 
@@ -194,16 +194,16 @@ public  function update(Request $request, $id)
                     mkdir($upload_path, 0777, true);
                 }
 
-                Image::read($request->image)
+                Image::read($request->photo)
                     ->resize(200, 200)
                     ->save($upload_path . '/' . $name);
 
-                $product->image = $name;
+                $product->photo = $name;
             } catch (\Throwable $e) {
-                $product->image = $product->image;
+                $product->photo = $product->photo;
             }
         } else {
-            $product->image = $product->image;
+            $product->photo = $product->photo;
         }
 
         $product->save();
@@ -218,9 +218,9 @@ public  function update(Request $request, $id)
 public function destroy($id){
     $product = Product::findOrFail($id);
     $image_path = public_path(). "/upload/";
-    $image =$image_path .$product->image;
-    if(file_exists($image)){
-        @unlink($image);
+    $photo =$image_path .$product->photo;
+    if(file_exists($photo)){
+        @unlink($photo);
     }
     $product->delete();
 }

@@ -99,9 +99,9 @@
                                                             <tbody>
                                                                 <tr v-for="product in products" :key="product.id">
                                                                     <td>{{ product.item_name }}</td>
-                                                                    <td><img :src="ourImage(product.image)" style="width:100px; height:80px;"/></td>
+                                                                    <td><img :src="ourImage(product.photo)" style="width:100px; height:80px;"/></td>
                                                                     <td>{{ product.condition }}</td>
-                                                                    <td>UGX : {{ product.price }}</td>
+                                                                    <td>UGX : {{ product.sales_price }}</td>
                                                                     <td>
                                                                         <button class="btn btn-sm btn-primary me-1 mb-1"
                                                                             @click="onEdit(product.id)"
