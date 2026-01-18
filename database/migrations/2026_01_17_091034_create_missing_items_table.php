@@ -14,11 +14,11 @@ return new class extends Migration
         Schema::create('missing_items', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('item')->index();
-            $table->string('ip_address')->nullable()->after('item');
-            $table->text('user_agent')->nullable()->after('ip_address');
-            $table->boolean('is_suspicious')->default(false)->after('user_agent')->index();
-            $table->text('detection_reason')->nullable()->after('is_suspicious');
-            $table->timestamp('submitted_at')->nullable()->after('detection_reason')->index();
+            $table->string('ip_address')->nullable();
+            $table->text('user_agent')->nullable();
+            $table->boolean('is_suspicious')->default(false)->index();
+            $table->text('detection_reason')->nullable();
+            $table->timestamp('submitted_at')->nullable()->index();
             $table->softDeletes();
             $table->timestamps();
         });

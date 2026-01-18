@@ -13,15 +13,16 @@ return new class extends Migration
     {
         Schema::create('pickup_stations', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('delivery_fees_id')->constrained()->onDelete('cascade');
-            $table->string('station_name')->index();
-            $table->string('station_contact');
-            $table->text('station_location');
+            $table->foreignUuid('location_id')->constrained('locations')->onDelete('cascade');
+            $table->decimal('fee_amount', 10, 2);
+            $table->string('fee_type'); // e.g., 'standard', 'express', 'overnight'
+            $table->text('description')->nullable();
+            $table->boolean('is_active')->default(true);
             $table->foreignUuid('created_by')->constrained('users')->onDelete('cascade');
-            $table->softDeletes();
             $table->timestamps();
+            $table->softDeletes();
 
-            $table->index(['delivery_fees_id', 'created_by']);
+            $table->index(['location_id', 'fee_type', 'is_active']);
         });
     }
 

@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('customer_item_views', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignUuid('user_id')->nullable()->constrained('users')->onDelete('cascade');
-            $table->foreignUuid('item_id')->constrained()->onDelete('cascade');
+            $table->foreignUuid('product_id')->constrained()->onDelete('cascade');
             $table->uuid('visitor_id')->nullable()->index();
             $table->string('ip_address')->nullable();
             $table->string('session_id')->nullable();
@@ -23,7 +23,7 @@ return new class extends Migration
             $table->softDeletes();
             $table->timestamps();
 
-            $table->index(['item_id', 'user_id']);
+            $table->index(['product_id', 'user_id']);
         });
     }
 

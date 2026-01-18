@@ -1,8 +1,8 @@
 <template>
-    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top" :class="navbarClass">
         <div class="container">
             <!-- Logo/Brand -->
-            <router-link class="navbar-brand fw-bold text-primary" to="/">
+            <router-link class="navbar-brand fw-bold" to="/">
                 <i class="bi bi-shop me-2"></i>Ugatrade
             </router-link>
 
@@ -16,21 +16,21 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <!-- Left-aligned menu items -->
                 <ul class="navbar-nav me-auto">
-                    <li class="nav-item">
+                    <li v-if="!authStore.isAuthenticated" class="nav-item">
                         <router-link class="nav-link" to="/">
                             <i class="bi bi-house-door me-1"></i>Home
                         </router-link>
                     </li>
                     
                     <!-- Products -->
-                    <li class="nav-item">
+                    <li v-if="!authStore.isAuthenticated" class="nav-item">
                         <router-link class="nav-link" to="/products">
                             <i class="bi bi-grid me-1"></i>All Products
                         </router-link>
                     </li>
 
-                    <!-- Categories Dropdown -->
-                    <li class="nav-item dropdown">
+                    <!-- Categories Dropdown - Show only if NOT logged in -->
+                    <li v-if="!authStore.isAuthenticated" class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="categoriesDropdown" 
                            role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="bi bi-tags me-1"></i>Categories
@@ -61,8 +61,8 @@
                         </ul>
                     </li>
 
-                    <!-- Condition Filter -->
-                    <li class="nav-item dropdown">
+                    <!-- Condition Filter - Show only if NOT logged in -->
+                    <li v-if="!authStore.isAuthenticated" class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="conditionDropdown" 
                            role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="bi bi-stars me-1"></i>Condition
@@ -84,23 +84,15 @@
                         </ul>
                     </li>
 
-
-                     <!-- For Admin -->
-                     <li class="nav-item" v-if="authStore.isAuthenticated && authStore.isAdmin">
+                    <!-- For Admin - Only show when admin is logged in -->
+                    <li v-if="authStore.isAuthenticated && authStore.isAdmin" class="nav-item">
                         <router-link class="nav-link" to="/dashboard/admin">
-                            <i class="bi bi-speedometer2 me-1"></i>Admin Dashboard
+                            <i class="bi bi-shield-check me-1"></i>Admin Panel
                         </router-link>
                     </li>
 
-                    <!-- For Sellers -->
-                    <li class="nav-item" v-if="authStore.isAuthenticated && authStore.isSeller">
-                        <router-link class="nav-link" to="/dashboard/seller">
-                            <i class="bi bi-speedometer2 me-1"></i>Seller Dashboard
-                        </router-link>
-                    </li>
-
-                    <!-- For Buyers -->
-                    <li class="nav-item" v-if="authStore.isAuthenticated && authStore.isBuyer">
+                    <!-- For Buyers - Only show when buyer is logged in -->
+                    <li v-if="authStore.isAuthenticated && authStore.isBuyer" class="nav-item">
                         <router-link class="nav-link" to="/dashboard/buyer">
                             <i class="bi bi-cart me-1"></i>Buyer Dashboard
                         </router-link>
@@ -114,30 +106,29 @@
                     </li>
                 </ul>
 
-                <!-- Right-aligned items (Search, User) -->
+                <!-- Right-aligned items -->
                 <div class="d-flex align-items-center">
-                    <!-- Desktop Search -->
+                    <!-- Desktop Search - Always show -->
                     <div class="d-none d-lg-block me-3">
                         <div class="input-group search-group">
-                            <span class="input-group-text bg-transparent border-end-0">
+                            <span class="input-group-text">
                                 <i class="bi bi-search"></i>
                             </span>
                             <input 
                                 type="search" 
-                                class="form-control border-start-0" 
-                                placeholder="Search products, sellers..."
+                                class="form-control" 
+                                placeholder="Search products..."
                                 v-model="searchQuery"
                                 @keyup.enter="performSearch"
-                                @input="onSearchInput"
                                 ref="searchInput"
                             >
                             <button 
                                 v-if="searchQuery" 
-                                class="btn btn-outline-secondary border-start-0 text-white" 
+                                class="btn btn-outline-secondary" 
                                 @click="clearSearch"
                                 type="button"
                             >
-                                <i class="bi bi-x"></i> 
+                                <i class="bi bi-x"></i>
                             </button>
                             <button 
                                 class="btn btn-primary" 
@@ -145,7 +136,7 @@
                                 :disabled="searchLoading"
                                 type="button"
                             >
-                                <i class="bi bi-search"></i> Search
+                                <i class="bi bi-search"></i>
                             </button>
                         </div>
                     </div>
@@ -191,7 +182,7 @@
                                     <small class="text-muted">Welcome, {{ authStore.user?.name }}</small>
                                 </li>
                                 <li>
-                                    <router-link class="dropdown-item" to="/dashboard">
+                                    <router-link class="dropdown-item" to="/dashboard/seller">
                                         <i class="bi bi-speedometer2 me-2"></i>Dashboard
                                     </router-link>
                                 </li>
@@ -202,13 +193,13 @@
                                 </li>
                                 <li v-if="authStore.isSeller">
                                     <router-link class="dropdown-item" to="/products/create">
-                                        <i class="bi bi-plus-circle me-2"></i>Add New Product
+                                        <i class="bi bi-plus-circle me-2"></i>Add Product
                                     </router-link>
                                 </li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li>
                                     <router-link class="dropdown-item" to="/profile">
-                                        <i class="bi bi-person me-2"></i>My Profile
+                                        <i class="bi bi-person me-2"></i>Profile
                                     </router-link>
                                 </li>
                                 <li>
@@ -230,13 +221,13 @@
             </div>
         </div>
 
-        <!-- Mobile Search Bar (hidden by default) -->
-        <div v-if="showMobileSearch" class="bg-light border-top py-3 d-lg-none">
+        <!-- Mobile Search Bar -->
+        <div v-if="showMobileSearch" class="mobile-search-container d-lg-none">
             <div class="container">
                 <div class="search-container">
                     <div class="input-group mb-2">
-                        <span class="input-group-text bg-white">
-                            <i class="bi bi-search text-muted"></i>
+                        <span class="input-group-text">
+                            <i class="bi bi-search"></i>
                         </span>
                         <input 
                             type="search" 
@@ -248,7 +239,7 @@
                         >
                         <button 
                             v-if="mobileSearchQuery" 
-                            class="btn btn-outline-secondary text-white" 
+                            class="btn btn-outline-secondary" 
                             @click="clearMobileSearch"
                             type="button"
                         >
@@ -257,7 +248,7 @@
                     </div>
                     <div class="d-flex justify-content-between">
                         <button 
-                            class="btn btn-primary btn-sm text-white" 
+                            class="btn btn-primary btn-sm" 
                             @click="performMobileSearch"
                             :disabled="searchLoading"
                         >
@@ -279,7 +270,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, nextTick } from 'vue'
+import { ref, computed, onMounted, nextTick } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useAuthStore } from '../../stores/auth'
 
@@ -296,6 +287,19 @@ const searchLoading = ref(false)
 // Refs
 const searchInput = ref(null)
 const mobileSearchInput = ref(null)
+
+// Computed property for navbar class based on user type
+const navbarClass = computed(() => {
+    if (!authStore.isAuthenticated) {
+        return 'bg-gradient-navbar-public'
+    }
+    switch (authStore.user?.user_type) {
+        case 'admin': return 'bg-gradient-navbar-admin'
+        case 'seller': return 'bg-gradient-navbar-seller'
+        case 'buyer': return 'bg-gradient-navbar-buyer'
+        default: return 'bg-gradient-navbar-public'
+    }
+})
 
 // Check for search query in URL
 onMounted(() => {
@@ -357,11 +361,6 @@ const clearMobileSearch = () => {
     searchQuery.value = ''
 }
 
-// Handle search input
-const onSearchInput = () => {
-    // Search suggestions logic can go here
-}
-
 // Logout
 const logout = async () => {
     await authStore.logout()
@@ -370,26 +369,50 @@ const logout = async () => {
 </script>
 
 <style scoped>
+/* Professional Gradient Backgrounds */
+.bg-gradient-navbar-public {
+    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.bg-gradient-navbar-admin {
+    background: linear-gradient(135deg, #8B0000 0%, #B22222 100%);
+    box-shadow: 0 4px 20px rgba(139, 0, 0, 0.2);
+}
+
+.bg-gradient-navbar-seller {
+    background: linear-gradient(135deg, #006400 0%, #228B22 100%);
+    box-shadow: 0 4px 20px rgba(0, 100, 0, 0.2);
+}
+
+.bg-gradient-navbar-buyer {
+    background: linear-gradient(135deg, #191970 0%, #4169E1 100%);
+    box-shadow: 0 4px 20px rgba(25, 25, 112, 0.2);
+}
+
+/* Navbar Base Styles */
 .navbar {
     padding: 0.8rem 0;
     transition: all 0.3s ease;
     z-index: 1030;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
 
 .navbar-brand {
     font-size: 1.5rem;
-    color: #2c3e50;
     font-weight: 700;
+    color: white !important;
+    transition: all 0.3s ease;
 }
 
 .navbar-brand:hover {
-    color: #007bff;
+    opacity: 0.9;
+    transform: translateY(-1px);
 }
 
+/* Nav Items */
 .nav-link {
     font-weight: 500;
-    color: #555;
+    color: rgba(255, 255, 255, 0.9) !important;
     padding: 0.5rem 1rem;
     border-radius: 5px;
     transition: all 0.3s ease;
@@ -398,70 +421,26 @@ const logout = async () => {
 }
 
 .nav-link:hover, .nav-link.router-link-exact-active {
-    color: #007bff;
-    background-color: rgba(0, 123, 255, 0.08);
+    color: white !important;
+    background-color: rgba(255, 255, 255, 0.15);
     transform: translateY(-1px);
 }
 
 .nav-link.router-link-exact-active {
     font-weight: 600;
-}
-
-/* Search Styles */
-.search-group {
-    position: relative;
-    min-width: 300px;
-    border-radius: 2px;
-    overflow: visible;
-    border: 1px solid #dee2e6;
-    transition: all 0.3s ease;
-}
-
-.search-group:focus-within {
-    border-color: #007bff;
-    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
-    transform: translateY(-1px);
-}
-
-.search-group .form-control {
-    border: none;
-    padding-left: 0;
-    background: transparent;
-}
-
-.search-group .form-control:focus {
-    box-shadow: none;
-    background: transparent;
-}
-
-.search-group .input-group-text {
-    background: transparent;
-    border: none;
-    color: #6c757d;
-}
-
-.search-group .btn {
-    border-radius: 0 2px 2px 0;
-    padding: 0.5rem 1.5rem;
-}
-
-/* Mobile Search */
-.search-container {
-    background: white;
-    padding: 1rem;
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    background-color: rgba(255, 255, 255, 0.2);
 }
 
 /* Dropdown Styles */
 .dropdown-menu {
     border: none;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
     border-radius: 10px;
     padding: 0.5rem 0;
     margin-top: 0.5rem;
     animation: fadeIn 0.3s ease;
     min-width: 220px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 .dropdown-item {
@@ -473,8 +452,8 @@ const logout = async () => {
 }
 
 .dropdown-item:hover {
-    background-color: #007bff;
-    color: white;
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    color: white !important;
     transform: translateX(5px);
 }
 
@@ -492,6 +471,108 @@ const logout = async () => {
     margin: 0.5rem 0;
 }
 
+/* Search Styles */
+.search-group {
+    position: relative;
+    min-width: 300px;
+    border-radius: 25px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+}
+
+.search-group:focus-within {
+    border-color: white;
+    box-shadow: 0 0 0 0.25rem rgba(255, 255, 255, 0.25);
+    transform: translateY(-1px);
+}
+
+.search-group .form-control {
+    border: none;
+    padding-left: 0;
+    background: transparent;
+    color: white;
+}
+
+.search-group .form-control::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.search-group .form-control:focus {
+    box-shadow: none;
+    background: transparent;
+}
+
+.search-group .input-group-text {
+    background: transparent;
+    border: none;
+    color: white;
+}
+
+.search-group .btn-primary {
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    transition: all 0.3s ease;
+}
+
+.search-group .btn-primary:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-1px);
+}
+
+.search-group .btn-outline-secondary {
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: white;
+}
+
+/* Mobile Search */
+.mobile-search-container {
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(10px);
+    padding: 1rem 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.search-container {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 1rem;
+    border-radius: 15px;
+    backdrop-filter: blur(10px);
+}
+
+.search-container .form-control {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: white;
+}
+
+.search-container .form-control::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.search-container .input-group-text {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: white;
+}
+
+/* Contact Button */
+.btn-outline-success {
+    border-color: rgba(255, 255, 255, 0.5);
+    color: white;
+    background: rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+}
+
+.btn-outline-success:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: white;
+    transform: translateY(-1px);
+}
+
 /* Search Loading Overlay */
 .search-loading-overlay {
     position: fixed;
@@ -499,12 +580,14 @@ const logout = async () => {
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(255, 255, 255, 0.9);
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     z-index: 2000;
+    color: white;
 }
 
 /* Animations */
@@ -523,6 +606,8 @@ const logout = async () => {
 @media (max-width: 991.98px) {
     .navbar-collapse {
         padding: 1rem 0;
+        background: inherit;
+        border-radius: 0 0 15px 15px;
     }
     
     .nav-item {
@@ -530,14 +615,24 @@ const logout = async () => {
     }
     
     .dropdown-menu {
+        background: white;
         border: 1px solid #dee2e6;
-        box-shadow: none;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         margin-left: 1rem;
     }
     
     .search-group {
         min-width: 100%;
         margin-bottom: 1rem;
+    }
+    
+    /* Mobile-specific styles for dropdown items */
+    .navbar-collapse .dropdown-item {
+        color: #495057 !important;
+    }
+    
+    .navbar-collapse .dropdown-item:hover {
+        color: white !important;
     }
 }
 
@@ -569,11 +664,40 @@ const logout = async () => {
         margin-right: 0;
         font-size: 1.2rem;
     }
+    
+    .btn-outline-success span {
+        display: none;
+    }
+    
+    .btn-outline-success i {
+        margin-right: 0;
+    }
 }
 
 /* Badge styles */
 .badge {
     font-size: 0.7rem;
     padding: 0.2rem 0.5rem;
+}
+
+/* Toggler button color for different themes */
+.bg-gradient-navbar-public .navbar-toggler {
+    border-color: rgba(255, 255, 255, 0.3);
+    color: white;
+}
+
+.bg-gradient-navbar-admin .navbar-toggler {
+    border-color: rgba(255, 255, 255, 0.3);
+    color: white;
+}
+
+.bg-gradient-navbar-seller .navbar-toggler {
+    border-color: rgba(255, 255, 255, 0.3);
+    color: white;
+}
+
+.bg-gradient-navbar-buyer .navbar-toggler {
+    border-color: rgba(255, 255, 255, 0.3);
+    color: white;
 }
 </style>

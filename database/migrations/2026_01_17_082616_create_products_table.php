@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignUuid('category_id')->constrained()->onDelete('cascade');
             $table->foreignUuid('type_id')->constrained()->onDelete('cascade');
             $table->foreignUuid('location_id')->constrained('locations')->onDelete('cascade');
-            $table->foreignUuid('country_id')->nullable()->constrained()->onDelete('cascade');
+            //$table->foreignUuid('country_id')->nullable()->constrained()->onDelete('cascade');
             $table->string('item_name');
             $table->string('slug');
             $table->enum('gender', ['unisex', 'women', 'men', 'children', 'babies'])->default('unisex');
@@ -85,9 +85,8 @@ return new class extends Migration
             $table->index('type_id');
             $table->index('created_by');
             $table->index('slug');
-            $table->index('registration_id');
             $table->index('location_id');
-            $table->index('country_id');
+            //$table->index('country_id');
             $table->index('updated_by');
             $table->index('status');
             $table->index('offer');

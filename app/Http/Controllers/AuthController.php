@@ -11,6 +11,66 @@ use Illuminate\Validation\Rules\Password;
 
 class AuthController extends Controller
 {
+    // Login user - Fixed version
+    public function login(Request $request)
+    {
+        // Validate input
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email',
+            'password' => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        // Check credentials directly with database for better performance
+        $user = User::where('email', $request->email)->first();
+
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid email or password'
+            ], 401);
+        }
+
+        // Check password
+        if (!Hash::check($request->password, $user->password)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid email or password'
+            ], 401);
+        }
+        
+        // Check if user is active
+        if (!$user->is_active) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Your account has been deactivated'
+            ], 403);
+        }
+
+        // Create token
+        $token = $user->createToken('auth_token')->plainTextToken;
+
+        return response()->json([
+            'success' => true,
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'user_type' => $user->user_type,
+                'phone' => $user->phone,
+                'profile_image' => $user->profile_image
+            ],
+            'token' => $token,
+            'token_type' => 'Bearer'
+        ]);
+    }
+
     // Register new user
     public function register(Request $request)
     {
@@ -29,68 +89,32 @@ class AuthController extends Controller
             ], 422);
         }
 
+        // Create user
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'user_type' => $request->user_type ?? 'seller', // Default to seller
+            'user_type' => $request->user_type ?? 'seller',
             'phone' => $request->phone,
             'is_active' => true
         ]);
 
-        // Create token for immediate login
+        // Create token and auto-login
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
             'success' => true,
-            'message' => 'Registration successful!',
-            'user' => $user,
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'user_type' => $user->user_type,
+                'phone' => $user->phone,
+                'profile_image' => $user->profile_image
+            ],
             'token' => $token,
             'token_type' => 'Bearer'
         ], 201);
-    }
-
-    // Login user
-    public function login(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'email' => 'required|email',
-            'password' => 'required'
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'errors' => $validator->errors()
-            ], 422);
-        }
-
-        if (!Auth::attempt($request->only('email', 'password'))) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Invalid login credentials'
-            ], 401);
-        }
-
-        $user = User::where('email', $request->email)->firstOrFail();
-        
-        // Check if user is active
-        if (!$user->is_active) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Your account has been deactivated'
-            ], 403);
-        }
-
-        $token = $user->createToken('auth_token')->plainTextToken;
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Login successful!',
-            'user' => $user,
-            'token' => $token,
-            'token_type' => 'Bearer'
-        ]);
     }
 
     // Logout user
@@ -107,9 +131,18 @@ class AuthController extends Controller
     // Get authenticated user
     public function me(Request $request)
     {
+        $user = $request->user();
+        
         return response()->json([
             'success' => true,
-            'user' => $request->user()
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'user_type' => $user->user_type,
+                'phone' => $user->phone,
+                'profile_image' => $user->profile_image
+            ]
         ]);
     }
 
@@ -137,8 +170,14 @@ class AuthController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Profile updated successfully',
-            'user' => $user
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'user_type' => $user->user_type,
+                'phone' => $user->phone,
+                'profile_image' => $user->profile_image
+            ]
         ]);
     }
 

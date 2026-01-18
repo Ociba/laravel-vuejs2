@@ -13,10 +13,8 @@ return new class extends Migration
     {
         Schema::create('customer_reviews', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('item_id')->constrained()->onDelete('cascade');
+            $table->foreignUuid('product_id')->constrained()->onDelete('cascade');
             $table->foreignUuid('user_id')->constrained('users')->onDelete('cascade');
-            $table->foreignUuid('guest_user_id')->nullable();
-            $table->foreign('guest_user_id')->references('id')->on('guest_users')->onDelete('cascade');
             $table->string('rate');
             $table->string('message');
             $table->enum('review_status', ['pending', 'active'])->default('pending')->index();
@@ -24,7 +22,7 @@ return new class extends Migration
             $table->softDeletes();
             $table->timestamps();
 
-            $table->index(['item_id', 'user_id', 'guest_user_id', 'updated_by']);
+            $table->index(['product_id', 'user_id', 'updated_by']);
         });
     }
 

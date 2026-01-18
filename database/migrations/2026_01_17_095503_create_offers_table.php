@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('offers', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('item_id')->constrained()->onDelete('cascade');
+            $table->foreignUuid('product_id')->constrained()->onDelete('cascade');
             $table->foreignUuid('owner_id')->constrained('users')->onDelete('cascade');
             $table->foreignUuid('user_id')->constrained('users')->onDelete('cascade');
             $table->decimal('price', 10, 2);
@@ -21,7 +21,7 @@ return new class extends Migration
             $table->softDeletes();
             $table->timestamps();
 
-            $table->index(['item_id', 'owner_id', 'user_id']);
+            $table->index(['product_id', 'owner_id', 'user_id']);
         });
     }
 

@@ -20,7 +20,6 @@ return new class extends Migration
             $table->timestamps();
 
             $table->index(['category_id', 'created_by']);
-            $table->timestamps();
         });
     }
 

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('call_back_requests', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('item_id')->constrained()->onDelete('cascade');
+            $table->foreignUuid('product_id')->constrained()->onDelete('cascade');
             $table->foreignUuid('owner_id')->constrained('users')->onDelete('cascade');
             $table->string('requested_by');
             $table->string('phone');
@@ -21,7 +21,7 @@ return new class extends Migration
             $table->softDeletes();
             $table->timestamps();
 
-            $table->index(['item_id', 'owner_id']);
+            $table->index(['product_id', 'owner_id']);
         });
     }
 

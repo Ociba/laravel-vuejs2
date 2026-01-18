@@ -9,11 +9,18 @@ use Illuminate\Validation\Rule;
 class TypeController extends Controller
 {
     /**
-     * GET all types with category
+     * GET all types with category (filter by category if provided)
      */
-    public function index()
+    public function index(Request $request)
     {
-        $types = Type::with('category')->get();
+        $query = Type::with('category');
+        
+        // Filter by category_id if provided
+        if ($request->has('category_id') && !empty($request->category_id)) {
+            $query->where('category_id', $request->category_id);
+        }
+        
+        $types = $query->paginate(10);
 
         return response()->json([
             'types' => $types
@@ -40,6 +47,7 @@ class TypeController extends Controller
         $validated = $request->validate([
             'category_id' => ['required', Rule::exists('categories', 'id')],
             'type' => ['required', 'string', 'max:255'],
+            'group' => ['nullable', 'string', 'max:255'],
         ]);
 
         $type = Type::create($validated);
@@ -60,6 +68,7 @@ class TypeController extends Controller
         $validated = $request->validate([
             'category_id' => ['required', Rule::exists('categories', 'id')],
             'type' => ['required', 'string', 'max:255'],
+            'group' => ['nullable', 'string', 'max:255'],
         ]);
 
         $type->update($validated);
