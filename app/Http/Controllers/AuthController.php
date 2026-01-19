@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\Password;
@@ -61,6 +61,7 @@ class AuthController extends Controller
             'user' => [
                 'id' => $user->id,
                 'name' => $user->name,
+                'username' => $user->username,
                 'email' => $user->email,
                 'user_type' => $user->user_type,
                 'phone' => $user->phone,
@@ -73,31 +74,43 @@ class AuthController extends Controller
 
     // Register new user
     public function register(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => ['required', 'confirmed', Password::min(8)],
-            'phone' => 'nullable|string|max:20',
-            'user_type' => 'nullable|in:admin,seller,buyer',
-        ]);
+{
+    // Add debug logging
+    Log::info('Registration attempt', $request->all());
+    
+    $validator = Validator::make($request->all(), [
+        'name' => 'required|string|max:255',
+        'username' => 'required|string|max:255|unique:users', // Fixed: removed |username|
+        'email' => 'required|string|email|max:255|unique:users',
+        'password' => ['required', 'confirmed', Password::min(8)],
+        'phone' => 'nullable|string|max:20',
+        'user_type' => 'nullable|in:admin,seller,buyer',
+    ]);
 
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'errors' => $validator->errors()
-            ], 422);
-        }
+    if ($validator->fails()) {
+        Log::error('Validation failed', $validator->errors()->toArray());
+        return response()->json([
+            'success' => false,
+            'errors' => $validator->errors()
+        ], 422);
+    }
 
+    try {
         // Create user
         $user = User::create([
             'name' => $request->name,
+            'username' => $request->username,
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'user_type' => $request->user_type ?? 'seller',
             'phone' => $request->phone,
-            'is_active' => true
+            'is_active' => true,
+            'user_status' => 'active',
+            'registration_ip' => $request->ip(),
+            'registration_user_agent' => $request->header('User-Agent')
         ]);
+
+        Log::info('User created successfully', ['user_id' => $user->id]);
 
         // Create token and auto-login
         $token = $user->createToken('auth_token')->plainTextToken;
@@ -107,6 +120,7 @@ class AuthController extends Controller
             'user' => [
                 'id' => $user->id,
                 'name' => $user->name,
+                'username' => $user->username,
                 'email' => $user->email,
                 'user_type' => $user->user_type,
                 'phone' => $user->phone,
@@ -115,7 +129,19 @@ class AuthController extends Controller
             'token' => $token,
             'token_type' => 'Bearer'
         ], 201);
+
+    } catch (\Exception $e) {
+        Log::error('Registration error: ' . $e->getMessage(), [
+            'trace' => $e->getTraceAsString()
+        ]);
+        
+        return response()->json([
+            'success' => false,
+            'message' => 'Registration failed. Please try again.',
+            'error' => env('APP_DEBUG') ? $e->getMessage() : null
+        ], 500);
     }
+}
 
     // Logout user
     public function logout(Request $request)
@@ -138,6 +164,7 @@ class AuthController extends Controller
             'user' => [
                 'id' => $user->id,
                 'name' => $user->name,
+                'username' => $user->username,
                 'email' => $user->email,
                 'user_type' => $user->user_type,
                 'phone' => $user->phone,
@@ -153,6 +180,7 @@ class AuthController extends Controller
 
         $validator = Validator::make($request->all(), [
             'name' => 'sometimes|required|string|max:255',
+            'username' => 'sometimes|required|unique:users,username',
             'email' => 'sometimes|required|email|unique:users,email,' . $user->id,
             'phone' => 'nullable|string|max:20',
             'address' => 'nullable|string|max:500',
@@ -166,13 +194,14 @@ class AuthController extends Controller
             ], 422);
         }
 
-        $user->update($request->only(['name', 'email', 'phone', 'address', 'profile_image']));
+        $user->update($request->only(['name', 'username', 'email', 'phone', 'address', 'profile_image']));
 
         return response()->json([
             'success' => true,
             'user' => [
                 'id' => $user->id,
                 'name' => $user->name,
+                'username' => $user->username,
                 'email' => $user->email,
                 'user_type' => $user->user_type,
                 'phone' => $user->phone,

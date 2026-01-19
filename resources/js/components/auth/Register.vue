@@ -169,6 +169,25 @@
                                     </div>
                                 </div>
 
+                                <!-- Full Name -->
+                                <div class="form-group mb-4">
+                                    <label for="username" class="form-label fw-semibold">
+                                        <i class="bi bi-person me-1"></i> Username
+                                    </label>
+                                    <input 
+                                        type="text" 
+                                        class="form-control form-control-lg" 
+                                        id="username" 
+                                        placeholder="Enter your username"
+                                        v-model="form.username"
+                                        :class="{ 'is-invalid': errors.username }"
+                                        @input="clearError('username')"
+                                    >
+                                    <div class="invalid-feedback" v-if="errors.username">
+                                        {{ errors.username }}
+                                    </div>
+                                </div>
+
                                 <!-- Email -->
                                 <div class="form-group mb-4">
                                     <label for="email" class="form-label fw-semibold">
@@ -378,6 +397,7 @@ const registerForm = ref(null)
 
 const form = reactive({
     name: '',
+    username: '',
     email: '',
     phone: '',
     password: '',
@@ -387,6 +407,7 @@ const form = reactive({
 
 const errors = reactive({
     name: '',
+    username: '',
     email: '',
     phone: '',
     password: '',
@@ -444,6 +465,12 @@ const validateForm = () => {
     // Validate name
     if (!form.name.trim()) {
         errors.name = 'Full name is required'
+        isValid = false
+    }
+
+    // Validate username
+    if (!form.username.trim()) {
+        errors.username = 'Username is required'
         isValid = false
     }
     
@@ -521,31 +548,69 @@ const handleRegister = async () => {
     loading.value = true
     
     try {
-        const result = await authStore.register(form)
+        // Prepare data for backend
+        const registrationData = {
+            name: form.name.trim(),
+            username: form.username.trim(),
+            email: form.email.trim(),
+            phone: form.phone.trim(),
+            password: form.password,
+            password_confirmation: form.password_confirmation,
+            user_type: 'seller'
+        }
+        
+        console.log('Registering with data:', registrationData)
+        
+        const result = await authStore.register(registrationData)
+        
+        console.log('Registration result:', result)
         
         if (result.success) {
-            successMessage.value = 'Account created successfully! Redirecting...'
+            successMessage.value = 'Account created successfully! Redirecting to dashboard...'
+            
+            // Determine redirect path based on user type
+            let redirectPath = '/'
+            const userType = authStore.user?.user_type || 'seller'
+            
+            switch(userType) {
+                case 'admin':
+                    redirectPath = '/admin/dashboard'
+                    break
+                case 'seller':
+                    redirectPath = '/seller/dashboard'
+                    break
+                case 'buyer':
+                    redirectPath = '/buyer/dashboard'
+                    break
+                default:
+                    redirectPath = '/dashboard'
+            }
+            
+            console.log('Redirecting to:', redirectPath)
+            
+            // Redirect after short delay
             setTimeout(() => {
-                router.push(route.query.redirect || '/seller/dashboard')
+                router.push(redirectPath)
             }, 1500)
         } else {
-            errorMessage.value = result.message || 'Registration failed'
+            // Handle validation errors from backend
+            if (result.errors) {
+                // Map backend errors to form fields
+                if (result.errors.name) errors.name = result.errors.name[0]
+                if (result.errors.username) errors.username = result.errors.username[0]
+                if (result.errors.email) errors.email = result.errors.email[0]
+                if (result.errors.phone) errors.phone = result.errors.phone[0]
+                if (result.errors.password) errors.password = result.errors.password[0]
+                if (result.errors.user_type) errors.user_type = result.errors.user_type[0]
+                
+                errorMessage.value = 'Please fix the errors in the form'
+            } else {
+                errorMessage.value = result.message || 'Registration failed. Please try again.'
+            }
         }
     } catch (err) {
-        // Handle server validation errors
-        if (err.response?.data?.errors) {
-            const serverErrors = err.response.data.errors
-            
-            // Map server errors to form fields
-            if (serverErrors.name) errors.name = serverErrors.name[0]
-            if (serverErrors.email) errors.email = serverErrors.email[0]
-            if (serverErrors.phone) errors.phone = serverErrors.phone[0]
-            if (serverErrors.password) errors.password = serverErrors.password[0]
-            
-            errorMessage.value = 'Please check the form for errors'
-        } else {
-            errorMessage.value = err.response?.data?.message || 'Registration failed. Please try again.'
-        }
+        console.error('Registration catch error:', err)
+        errorMessage.value = 'An unexpected error occurred. Please try again.'
     } finally {
         loading.value = false
     }
